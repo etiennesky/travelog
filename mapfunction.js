@@ -550,7 +550,8 @@ TravelogMap.prototype.displayLocations = function(locationIDs) {
 			tLocationID = locations[locKey];
 			var point = new google.maps.LatLng(tLocations[tLocationID].latitude, tLocations[tLocationID].longitude);
 			var contents = tLocations[tLocationID].name;
-			this.markers[tLocationID] = this.createMarker(point, contents, tLocations[tLocationID].marker);
+//			this.markers[tLocationID] = this.createMarker(point, contents, tLocations[tLocationID].marker);
+			this.markers[tLocationID] = this.createNumberedMarker(point, contents, contents, i+1);
 			i++;
 		}
 	}
@@ -595,14 +596,16 @@ TravelogMap.prototype.parseAddedTrips = function(tripIds) {
 		if(typeof(tripIds) == 'string') {var trips = tripIds.split(',');}else{var trips = tripIds;}
 		for(tripkey in trips) {
 			var tripPath = new Array();
+			var tmpStr="";
 			for(k = 0; k < tTrips[trips[tripkey]].stops.length; k++) {
 				locationID = tTrips[trips[tripkey]].stops[k].ID;
 				this.contents.locations[locationID] = 't';
 				if(isGMapsJSLoaded) {
 					tripPath[k] = new google.maps.LatLng(tLocations[locationID].latitude, tLocations[locationID].longitude);
 					if(typeof(this.markers[locationID]) != 'object') {
-//						this.markers[locationID] = createMarker(tripPath[k], tLocations[locationID].name, tLocations[locationID].marker);
-						this.markers[locationID] = this.createMarker(tripPath[k], tLocations[locationID].name, ''); // TODO test with argument
+//						this.markers[locationID] = createMarker(tripPath[k], tLocations[locationID].name, tLocations[locationID].marker); // TODO test with argument
+                        tmpStr="<center><b>"+tLocations[locationID].name+"</b></center>";
+						this.markers[locationID] = this.createNumberedMarker(tripPath[k], tLocations[locationID].name, tmpStr, k+1); 
 					}
 				}
 			}
@@ -729,6 +732,33 @@ TravelogMap.prototype.createMarker = function(latlng, contents, icon) {
     return marker;
 }
 
+TravelogMap.prototype.createNumberedMarker = function(latlng, title, contents, number) {
+    if (isNaN(parseInt(number))) {
+        number = "";
+    } else if (!isNaN(parseInt(number)) && ((number < 0) || (number > 99))) {
+        number = "";
+    } else if ((typeof(number)=="undefined") || (number==null)) { 
+        number = "" 
+    }
+
+	// Creates a marker whose info window displays the given number
+	var marker = new google.maps.Marker( { 
+        position : latlng, 
+        title: title,
+        //http://www.geocodezip.com/basic8j.asp?filename=example_number.xml
+        icon : XMLAddress + "/../markers/marker" + number + ".png"
+    } );
+
+    var infoWindow = new google.maps.InfoWindow();
+    google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.setContent(contents);
+        infoWindow.open(map,marker);
+    });
+
+    marker.setMap(this.map);
+
+    return marker;
+}
 // Function for setting map display to a certain bounds box
 function centerAndZoomOnBounds(map,bounds, padPercent) { 
 	var sw = bounds.getSouthWest();
