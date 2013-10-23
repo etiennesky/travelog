@@ -32,7 +32,7 @@
 					$dates = array($new_visit);
 				}else{
 					$dates = explode(",",$location->dates_visited);
-					if(!in_array($new_visit, $dates)) $dates = array_merge($dates, $new_visit);
+					if(!in_array($new_visit, $dates)) $dates = array_merge($dates, array($new_visit));
 				}
 				if('' != $dates && count($dates) > 0) {
 					arsort($dates); //sort the dates so the most recent is always at the end of the list		
@@ -161,7 +161,10 @@
 								<div id="addStop" style="display:none;">Name: <input type="text" name="addStopLocationName" id="addStopLocationName" size="15" value="" /><input type="hidden" name="addStopLocationID" id="addStopLocationID" value="" /> &nbsp;<input type="button" id="editStopButton" title="Edit Location" value="Edit &raquo;" style="display:none;" onclick="window.location='tools.php?page=travelog.php&area=locations&action=edit&id='+document.getElementById('addStopLocationID').value;"/>
 									<div id="addStopOptions" style="display:none;margin-bottom:0;">
 										<small id="addStopMessage"></small>
-										<div id="addVisitOptions" style="margin-top: 10px;">New Visit: <input type="text" name="addStopVisit" id="addStopVisit" size="18" value="yyyy/mm/dd hh:mm" /> <input type="button" onclick="addStop();" value="Add Stop &raquo;" /></div>
+										<div id="addVisitOptions" style="margin-top: 10px;">New Visit: 
+                                        <input type="text" name="addStopVisit" id="addStopVisit" size="18" value="yyyy/mm/dd hh:mm" />
+                                        <input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('addStopVisit'); if(this.checked){new_date.value ='<?=date('Y/m/d H:i'); ?>';}else{if(new_date.value == '<?=date('Y/m/d H:i'); ?>'){new_date.value ='';}}" /> Today
+                                        <input type="button" onclick="addStop();" value="Add Stop &raquo;" /></div>
 									</div>
 								</div>
 								<script type="text/javascript">
