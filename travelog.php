@@ -176,6 +176,8 @@ class trip extends trip_db {
 		foreach($this->stops as $stopkey => $stop) {
 			$locationIds[] = $stop['location_id'];
 		}
+        if(empty($locationIds))
+            return 0;
 		$locationIds = array_unique($locationIds);
 		$locations = Travelog::get_locations('','','','',implode(',',$locationIds));
 		foreach($this->stops as $stopkey => $stop) {
@@ -208,9 +210,9 @@ class Travelog {
 		?>
 		<link rel="stylesheet" href="<?php bloginfo('wpurl');?>/wp-content/plugins/travelog/travelog_admin.css" type="text/css" />
 		<ul id="travelog_menu">
-			<li<?php if ('locations' == $_GET['area'] || !isset($_GET['area'])){ echo ' class="current"'; }?>><a href="edit.php?page=travelog.php">Locations</a></li>
-			<li<?php if ('trips' == $_GET['area']){ echo ' class="current"'; }?>><a href="edit.php?page=travelog.php&area=trips">Trips</a></li>
-			<li<?php if ('categories' == $_GET['area']){ echo ' class="current"'; }?>><a href="edit.php?page=travelog.php&area=categories">Categories</a></li>
+			<li<?php if ('locations' == $_GET['area'] || !isset($_GET['area'])){ echo ' class="current"'; }?>><a href="tools.php?page=travelog.php">Locations</a></li>
+			<li<?php if ('trips' == $_GET['area']){ echo ' class="current"'; }?>><a href="tools.php?page=travelog.php&area=trips">Trips</a></li>
+			<li<?php if ('categories' == $_GET['area']){ echo ' class="current"'; }?>><a href="tools.php?page=travelog.php&area=categories">Categories</a></li>
 		</ul>
 		<?php
 		}

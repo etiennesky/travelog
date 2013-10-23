@@ -24,6 +24,7 @@
 	
 	// Add a new trip if asked
 	if(isset($_POST['add']) && '' != $_POST['new_trip_name']) {
+        $new_trip = new trip();
 		$new_trip->name = $_POST['new_trip_name'];
 		$new_trip->start_date = $_POST['new_trip_start'];
 		$new_trip->end_date = $_POST['new_trip_end'];
@@ -130,10 +131,19 @@
 		
 	$add_trip = 'hide';
 	
-	// Show Travelog Manager submeny
+	// Show Travelog Manager submenu
 	Travelog::adminheader();
 	
 ?>
+  		<script type="text/javascript">
+  			function formValidate() {
+  				if(document.tripsForm.new_trip_start.value == 'yyyy/mm/dd hh:mm') document.tripsForm.new_trip_start.value = '';
+  				if(document.tripsForm.new_trip_end.value == 'yyyy/mm/dd hh:mm') document.tripsForm.new_trip_end.value = '';
+  				return true;
+  			}
+  			
+  		</script>
+
 	<div class="wrap">
 		<p style="float: right;margin-top: 2px;"><a href="options-general.php?page=travelog.php" >Edit Travelog Options</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 		<h2><?= __('Travelog Trips', DOMAIN) ?></h2>
@@ -167,7 +177,7 @@
 							foreach ($trips as $key => $trip) {
 								$trip->get_itinerary();
 								$alternate = $alternate == ''? ' class="alternate"' : '';
-								echo "<tr $alternate><td style='text-align: center;'>$trip->id</td><td><a href='edit.php?page=travelog.php&amp;area=trips&amp;action=edit&amp;id=".$trip->id."' title='Edit this trip'>$trip->name</a></td><td style='text-align: center;'>".count($trip->stops)."</td><td style='text-align: center;'>$trip->start_date</td><td style='text-align: center;'>$trip->end_date</td><td style='text-align: center;'><input type='checkbox' name='remove_trip_$trip->id' /></td></tr>";
+								echo "<tr $alternate><td style='text-align: center;'>$trip->id</td><td><a href='tools.php?page=travelog.php&amp;area=trips&amp;action=edit&amp;id=".$trip->id."' title='Edit this trip'>$trip->name</a></td><td style='text-align: center;'>".count($trip->stops)."</td><td style='text-align: center;'>$trip->start_date</td><td style='text-align: center;'>$trip->end_date</td><td style='text-align: center;'><input type='checkbox' name='remove_trip_$trip->id' /></td></tr>";
 							}
 						}else{
 							echo '<tr><td colspan="6" style="text-align: center;">There are no trips in your Travelog</td></tr>';

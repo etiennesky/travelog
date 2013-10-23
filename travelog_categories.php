@@ -21,6 +21,7 @@
 
 		//Get information from the database
 		$categories = Travelog::get_categories();
+        if(empty($categories)) $categories = array();
 		$query_sql = "SELECT category, count(category) as locations FROM ".DB_TABLE." GROUP BY category";
 		$results = $wpdb->get_results($query_sql);
 		$locations_per_cat = array();
@@ -45,7 +46,7 @@
 			
 		// Add new date visited if one was passed
 		if($_POST['new_category'] != "") {
-			$categories = array_merge($categories, $_POST['new_category']);
+			$categories = array_merge($categories, array($_POST['new_category']));
 		}
 		
 		asort($categories); //sort the dates so the most recent is always at the end of the list

@@ -48,7 +48,7 @@
 	</style>
 	<form id="travelogOptions" method="post" onsubmit="formValidate();">
 	<div class="wrap">
-		<p style="float: right;margin-top: 2px;"><a href="edit.php?page=travelog.php" >Manage Travelog Locations</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+		<p style="float: right;margin-top: 2px;"><a href="tools.php?page=travelog.php" >Manage Travelog Locations</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 		<h2><?= __('Travelog Options', DOMAIN) ?></h2>
 			<table width="100%" cellspacing="2" cellpadding="5" class="editform">
 				<tr valign="top">

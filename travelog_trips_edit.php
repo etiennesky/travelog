@@ -112,7 +112,7 @@
 			-->
 			</style>
 		
-		<form method="post" name="editTripForm" id="editTripForm" action="edit.php?page=travelog.php&area=trips&action=<?= $todo?>">
+		<form method="post" name="editTripForm" id="editTripForm" action="tools.php?page=travelog.php&area=trips&action=<?= $todo?>">
 			<div class="wrap">
         		<p style="float: right;margin-top: 2px;"><a href="options-general.php?page=travelog.php" >Edit Travelog Options</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
                 <h2><?php if('add' == $action) { echo __("Add Trip", DOMAIN); }else{ echo __("Edit Trip", DOMAIN); } ?></h2>
@@ -148,17 +148,17 @@
 							<?php 
 								if(count($trip->stops) > 0) {
 									foreach($trip->stops as $order => $stop) {
-										echo "<li><a href='edit.php?page=travelog.php&amp;area=locations&amp;action=edit&amp;id=".$stop['location_id']."' title='Edit this location'>".$stop['name']."</a> - ".$stop['date']."</li>";
+										echo "<li><a href='tools.php?page=travelog.php&amp;area=locations&amp;action=edit&amp;id=".$stop['location_id']."' title='Edit this location'>".$stop['name']."</a> - ".$stop['date']."</li>";
 									}
 								}else{
 									echo "There are no stops on this trip";
 								}
 							 ?>
 						</ol>
-						<form id="addStopForm" method="post" action="edit.php?page=travelog.php&area=trips&action=edit&id=<?=$trip->id ?>">
+						<form id="addStopForm" method="post" action="tools.php?page=travelog.php&area=trips&action=edit&id=<?=$trip->id ?>">
 							<fieldset style="margin-bottom:5px;padding-bottom:5px;">
 							<legend><strong>Add Stop:</strong> (<a href="javascript:void(0)" onclick="var obj = document.getElementById('addStop');if(this.innerHTML.substr(0,4)=='show'){this.innerHTML='hide'; obj.style.display = 'block';}else{this.innerHTML='show'; obj.style.display = 'none';}">show</a>)</legend>
-								<div id="addStop" style="display:none;">Name: <input type="text" name="addStopLocationName" id="addStopLocationName" size="15" value="" /><input type="hidden" name="addStopLocationID" id="addStopLocationID" value="" /> &nbsp;<input type="button" id="editStopButton" title="Edit Location" value="Edit &raquo;" style="display:none;" onclick="window.location='edit.php?page=travelog.php&area=locations&action=edit&id='+document.getElementById('addStopLocationID').value;"/>
+								<div id="addStop" style="display:none;">Name: <input type="text" name="addStopLocationName" id="addStopLocationName" size="15" value="" /><input type="hidden" name="addStopLocationID" id="addStopLocationID" value="" /> &nbsp;<input type="button" id="editStopButton" title="Edit Location" value="Edit &raquo;" style="display:none;" onclick="window.location='tools.php?page=travelog.php&area=locations&action=edit&id='+document.getElementById('addStopLocationID').value;"/>
 									<div id="addStopOptions" style="display:none;margin-bottom:0;">
 										<small id="addStopMessage"></small>
 										<div id="addVisitOptions" style="margin-top: 10px;">New Visit: <input type="text" name="addStopVisit" id="addStopVisit" size="18" value="yyyy/mm/dd hh:mm" /> <input type="button" onclick="addStop();" value="Add Stop &raquo;" /></div>
@@ -237,7 +237,7 @@
 										if(newVisit.value != '' && newVisit.value != 'yyyy/mm/dd hh:mm') {
 											if(newVisit.value >= tripStart && newVisit.value <= tripEnd) {
 												var formElem = document.getElementById('editTripForm'); // Submit form
-												formElem.action = 'edit.php?page=travelog.php&area=trips&action=edit&id='+tripID;
+												formElem.action = 'tools.php?page=travelog.php&area=trips&action=edit&id='+tripID;
 												formElem.submit();
 											}else{
 												alert('The visit date/time you entered is not during the trip period. Check the stop date/time or change the trip start/end dates.');
@@ -260,7 +260,7 @@
 							<textarea rows="6" cols="50" name="edit_description" id="content"><?=$trip->description ?></textarea></td>
 						</tr>
 						<tr>
-							<td colspan="2" class="submit"><input type="submit" value="<?php if('add' == $action) { echo __("Add Trip", DOMAIN); }else{ echo __("Edit Trip", DOMAIN); } ?> &raquo;" onclick="document.forms[0].submit();" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='edit.php?page=travelog.php&area=trips'" /></td>
+							<td colspan="2" class="submit"><input type="submit" value="<?php if('add' == $action) { echo __("Add Trip", DOMAIN); }else{ echo __("Edit Trip", DOMAIN); } ?> &raquo;" onclick="document.forms[0].submit();" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='tools.php?page=travelog.php&area=trips'" /></td>
 						</tr>
 					</tbody>
                 </table>

@@ -18,6 +18,9 @@
 
 */
 
+// init default empty location object
+$location = new location();
+
 // ### Insert a new location into Travelog ###
 	if(isset($_GET['action']) && 'insert' == $_GET['action']) {
 		// Process the incoming form values
@@ -205,11 +208,11 @@
 		-->
 </style>
 
-	<form method="post" action="edit.php?page=travelog.php&amp;area=locations&amp;action=delete" id="travelogManagerForm">
+	<form method="post" action="tools.php?page=travelog.php&amp;area=locations&amp;action=delete" id="travelogManagerForm">
 		<div class="wrap">
 			<p style="float: right;margin-top: 2px;"><a href="options-general.php?page=travelog.php" >Edit Travelog Options</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 			<h2><?=__('Travelog Locations', DOMAIN)?></h2>
-			<p style="float: right;margin-top: 0.5em;clear: right;"><a href="edit.php?page=travelog.php&amp;area=locations&amp;action=add" >Add a new location</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+			<p style="float: right;margin-top: 0.5em;clear: right;"><a href="tools.php?page=travelog.php&amp;area=locations&amp;action=add" >Add a new location</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 			<p>Name: <input type="text" name="locationSearchQuery" id="locationSearchQuery" size="15" value="<?php echo $show_search;?>"/>
 			
 			&nbsp;&nbsp;&nbsp;&nbsp;Show: <select name="showNumResults" id="showNumResults">
@@ -257,7 +260,7 @@
 					$post_count = 0; ?>
 					<tr <?= $alternate ?>>
 						<td style="text-align:center"><?= $location->id ?></td>
-						<td class="alignleft"><input type="checkbox" class="locationMapToggle" id="l<?= $location->id ?>" value="0" title="Map this location" onclick="dataForm.locationBoxClicked(this);"/> <a href="edit.php?page=travelog.php&amp;area=locations&amp;action=edit&amp;id=<?= $location->id ?>" title="Edit this location"><?= $location->name ?></a></td>
+						<td class="alignleft"><input type="checkbox" class="locationMapToggle" id="l<?= $location->id ?>" value="0" title="Map this location" onclick="dataForm.locationBoxClicked(this);"/> <a href="tools.php?page=travelog.php&amp;area=locations&amp;action=edit&amp;id=<?= $location->id ?>" title="Edit this location"><?= $location->name ?></a></td>
 						<td style="text-align:center"><?= $location->category ?></td>
 						<td style="text-align:center"><?= $location->visits ?></td>
 						<td style="text-align:center"><?= $location->posts_from ?></td>
@@ -290,7 +293,7 @@
 							var rowData = '<td>'+tLocation.ID+'</td><td class="alignleft"><input type="checkbox" class="locationMapToggle" id="l'+tLocation.ID+'" value="0" title="Map this location" onclick="'+obj.myName+'.locationBoxClicked(this);"';
 							if(isMapped) rowData += ' checked="checked"';
 							if(!isMapEnabled) rowData += ' disabled="disabled"';
-							rowData += '/> <a href="edit.php?page=travelog.php&amp;area=locations&amp;action=edit&amp;id='+tLocation.ID+'" title="Edit this location">'+tLocation.name+'</a></td><td>'+tLocation.category+'</td><td>'+tLocation.visitCount+'</td><td>'+tLocation.posts.length+'</td><td><input type="checkbox" name="delete_id_'+tLocation.ID+'" /></td>';
+							rowData += '/> <a href="tools.php?page=travelog.php&amp;area=locations&amp;action=edit&amp;id='+tLocation.ID+'" title="Edit this location">'+tLocation.name+'</a></td><td>'+tLocation.category+'</td><td>'+tLocation.visitCount+'</td><td>'+tLocation.posts.length+'</td><td><input type="checkbox" name="delete_id_'+tLocation.ID+'" /></td>';
 							obj.renderObj.appendChild(document.createElement('tr'));
 							obj.renderObj.lastChild.innerHTML = rowData;
 							if(shown%2==1) obj.renderObj.lastChild.className = "alternate";

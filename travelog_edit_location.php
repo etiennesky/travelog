@@ -18,6 +18,9 @@
 
 */
 
+// init default empty location object
+$location = new location();
+
 		if(isset($_GET['action']) && 'edit' == $_GET['action']) {
 			// Will be editing an existing location
 			$location = Travelog::get_location($_GET['id']);
@@ -68,7 +71,7 @@
   			}
   		</script>
   	
-		<form method="post" name="editLocationForm" action="edit.php?page=travelog.php&area=locations&action=<?= $todo?>" onsubmit="return formValidate()">
+		<form method="post" name="editLocationForm" action="tools.php?page=travelog.php&area=locations&action=<?= $todo?>" onsubmit="return formValidate()">
 			
 			<div class="wrap">
         		<p style="float: right;margin-top: 2px;"><a href="options-general.php?page=travelog.php">Edit Travelog Options</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
@@ -223,7 +226,7 @@
 								<?php
 									$alternate = 'class="alternate"';
 									foreach ($location_trips as $trip_id) {
-										echo "<tr $alternate><td><a href='edit.php?page=travelog.php&area=trips&action=edit&id=" . $trip_id . "' title='Edit this trip'>" . $trips[$trip_id]->name . "</a></td><td style='text-align: center;'><input type='checkbox' name='remove_trip_$trip_id' /></td></tr>";
+										echo "<tr $alternate><td><a href='tools.php?page=travelog.php&area=trips&action=edit&id=" . $trip_id . "' title='Edit this trip'>" . $trips[$trip_id]->name . "</a></td><td style='text-align: center;'><input type='checkbox' name='remove_trip_$trip_id' /></td></tr>";
 									}
 								?>
 							</tbody>
@@ -258,7 +261,7 @@
 									echo "No other trips available";
 								}
 							}else{
-								echo "<a href='edit.php?page=travelog.php&area=trips'>Add trips to Travelog</a> &raquo;";
+								echo "<a href='tools.php?page=travelog.php&area=trips'>Add trips to Travelog</a> &raquo;";
 							}
 						?>
 						
@@ -288,7 +291,7 @@
 							<textarea rows="6" cols="50" name="edit_description" id="content"><?=$location->description ?></textarea></td>
 						</tr>
 						<tr>
-							<td colspan="2" class="submit"><input type="submit" value="<?php if('add' == $action) { echo __("Add Location", DOMAIN); }else{ echo __("Edit Location", DOMAIN); } ?> &raquo;" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='edit.php?page=travelog.php&area=locations'" /></td>
+							<td colspan="2" class="submit"><input type="submit" value="<?php if('add' == $action) { echo __("Add Location", DOMAIN); }else{ echo __("Edit Location", DOMAIN); } ?> &raquo;" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='tools.php?page=travelog.php&area=locations'" /></td>
 						</tr>
 					</tbody>
                 </table>
