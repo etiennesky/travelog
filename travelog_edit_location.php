@@ -210,7 +210,7 @@ $location = new location();
 							echo "<p>This location has never been visited</p>";
 							endif;
 						endif; ?>
-						<label for="edit_new_visit"><?= __('Add Visit', DOMAIN) ?>:</label></td><td><input type="text" name="edit_new_visit" id="edit_new_visit" size="18" value="yyyy/mm/dd hh:mm" onfocus="if(this.value == 'yyyy/mm/dd hh:mm') this.value = '';"/>&nbsp;&nbsp;<input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('edit_new_visit'); if(this.checked){new_date.value ='<?=date('Y/m/d H:m'); ?>';}else{if(new_date.value == '<?=date('Y/m/d H:m'); ?>'){new_date.value ='';}}" /> <?= __('Today', DOMAIN) ?>
+						<label for="edit_new_visit"><?= __('Add Visit', DOMAIN) ?>:</label></td><td><input type="text" name="edit_new_visit" id="edit_new_visit" size="18" value="yyyy/mm/dd hh:mm" onfocus="if(this.value == 'yyyy/mm/dd hh:mm') this.value = '';"/>&nbsp;&nbsp;<input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('edit_new_visit'); if(this.checked){new_date.value ='<?=date('Y/m/d H:i'); ?>';}else{if(new_date.value == '<?=date('Y/m/d H:i'); ?>'){new_date.value ='';}}" /> <?= __('Today', DOMAIN) ?>
 					</div>
 				</fieldset>
 				<fieldset name="trips_form" style="width: 33%;margin: 5px 0;">

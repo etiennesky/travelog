@@ -55,10 +55,11 @@ add_filter('the_content', array('Travelog', 'inline_locations'));
 // add_action('template_redirect', array('Travelog', 'map_archive'));  Redirect archives to a map based interface
 
 // Enable the TinyMCE Travelog plugin
-add_filter('admin_footer', array('Travelog', 'travelog_quicktagjs'),0);
-add_filter('mce_plugins', array('Travelog', 'travelog_extended_editor_mce_plugins'), 0);
-add_filter('mce_buttons', array('Travelog', 'travelog_extended_editor_mce_buttons'), 0);
-add_filter('mce_valid_elements', array('Travelog', 'travelog_extended_editor_mce_valid_elements'), 0);
+// disabled because it is not compatible with current TinyMCE
+/* add_filter('admin_footer', array('Travelog', 'travelog_quicktagjs'),0); */
+/* add_filter('mce_plugins', array('Travelog', 'travelog_extended_editor_mce_plugins'), 0); */
+/* add_filter('mce_buttons', array('Travelog', 'travelog_extended_editor_mce_buttons'), 0); */
+/* add_filter('mce_valid_elements', array('Travelog', 'travelog_extended_editor_mce_valid_elements'), 0); */
 
 //If the user has just activated the plugin, initialize the database
 if(isset($_GET['activate']) && $_GET['activate'] == 'true') {
@@ -216,6 +217,7 @@ class Travelog {
 			<li<?php if ('trips' == $_GET['area']){ echo ' class="current"'; }?>><a href="tools.php?page=travelog.php&area=trips">Trips</a></li>
 			<li<?php if ('categories' == $_GET['area']){ echo ' class="current"'; }?>><a href="tools.php?page=travelog.php&area=categories">Categories</a></li>
 		</ul>
+        <BR> 
 		<?php
 		}
 	}
@@ -646,17 +648,20 @@ class Travelog {
 				}
 
 				if($location->dates_visited == 'yyyy/mm/dd') $location->dates_visited = '';
+				else if($location->dates_visited == 'yyyy/mm/dd hh:mm') $location->dates_visited = '';
+                
 				$message = Travelog::add_location($location);
 				
 				$locations = Travelog::get_locations();
 				foreach($locations as $key => $location) {
 					if($location->name == $_POST["travelog_name"]) $new_location_id = $location->id;
 				}
-			}
+        }
 
 
+                /* echo "new loc1!";print_r($_POST); */
 		if($new_location_id != "") { // Only run this if there is a location to associate the post/page (pages call this too!) with
-
+              /* echo "new loc!";print_r($_POST); */
 			// If a new location has been added, create it and then retreive its id into $new_location_id
 			
 			
@@ -668,10 +673,10 @@ class Travelog {
 			}
 		
 			// Add the date to the dates_visited for the location associated with that post
-			if($_POST["travelog_add_date"] != "") {
+			if($_POST["travelog_add_visit"] != "") {
 				$location = Travelog::get_location($new_location_id);
 				$dates = $location->get_visits();
-				$dates = array_merge($dates, $_POST["travelog_add_date"].$_POST["travelog_add_hour"]);
+				$dates = array_merge($dates, Array($_POST["travelog_add_visit"]));
 				arsort($dates);
 				$new_dates_visited = implode(",", $dates);
 				$wpdb->query("UPDATE ".DB_TABLE." SET dates_visited = '".$new_dates_visited."' WHERE id = $location->id");
@@ -1192,6 +1197,20 @@ function distance_between($loc1, $loc2, $unit = "k" ) {
 }
 
 function travelog_summary_info() {
+	// Outputs a block of HTML showing location name (linked to map of location)
+	// designed to be shown along with post summaries (ie. index.php, archive.php or search.php)
+	
+	$location = Travelog::get_post_location();
+
+	if($location) {
+        echo "Posted from <a href='".Travelog::map_location_url("GoogleMaps")."' title='Map this location'>".$location->name;
+        if ( $location->name != $location->city ) echo ", ".$location->city;
+        if ( $location->country != "" ) echo ", ".$location->country;
+        echo "</a><br />";
+    }
+}
+
+function travelog_summary_info1() {
 	// Outputs a block of HTML showing location name (linked to map of location) and location coordinate in degrees-minutes-seconds
 	// designed to be shown along with post summaries (ie. index.php, archive.php or search.php)
 	
