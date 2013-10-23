@@ -1,0 +1,137 @@
+/* Legacy CSS from TinyMCE */
+
+body {
+	background-color: #F0F0EE;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	margin: 8px;
+}
+
+input {
+	background: #FFFFFF;
+	border: 1px solid #cccccc;
+}
+
+td, th, input, select, textarea {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+input, select, textarea {
+	border: 1px solid #808080;
+}
+
+input.radio {
+	border: 1px none #000000;
+	background-color: transparent;
+}
+
+input.checkbox {
+	border: 1px none #000000;
+	background-color: transparent;
+}
+
+fieldset {
+	border: 1px solid #919B9C;
+	font-family: Verdana, Arial;
+	font-size: 10px;
+	padding: 0px;
+	margin: 0px;
+	padding: 4px;
+	clear: left
+}
+
+legend {
+	color: #2B6FB6;
+	font-weight: bold;
+}
+
+a:link, a:visited {
+	color: black;
+}
+
+a:hover {
+	color: #2B6FB6;
+}
+
+h1, h2, h3, h4 {
+	color: #2B6FB6;
+	margin: 0px;
+	padding: 0px;
+	padding-top: 5px;
+}
+
+h3 {
+	font-size: 14px;
+}
+
+/* Specific Gallery2 Image Chooser CSS */
+.alternate {
+	background: #2B6FB6!important;
+}
+
+.blockToggle {
+	padding: 0 2px 0 2px;
+	background: #eee;
+	color: #000;
+	font-size: 9px;
+	border: 1px solid #888;
+	text-align: center;
+	font-weight: bold;
+	width: 0.8em;
+	float:right;
+	margin-right;-5px;
+	cursor: pointer;
+}
+
+input[type="radio"], input[type="checkbox"] {
+	vertical-align: -0.5em;
+}
+
+table {
+	border: 1px solid #999;
+	border-collapse: collapse;
+	width: 100%;
+	display: auto;
+	padding:0;
+}
+
+th {
+	background: #ddd;
+	padding: 2px 5px;
+	font-weight:bold;
+	text-align:left;
+}
+
+thead {
+	border-bottom: 1px solid #999;
+}
+
+tfoot {	
+	border-top: 1px solid #999;
+}
+
+tr {
+	background: #ccf;
+	width:100%;
+}
+
+.alternate {
+	background: #eee !important;
+}
+
+table ul {
+	white-space: nowrap;
+	margin: 0 auto;
+	list-style: none;
+	padding-left: 0;
+}
+
+table ul li {
+	padding-right: 10px;
+	display:block;
+}
+
+#tripResults {
+	margin-top: 15px;
+}

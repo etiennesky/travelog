@@ -1,0 +1,67 @@
+/*
+	Plugin: Travelog
+	Component: AJAX & GoogleMap Javascript
+	Author: Shane Warner
+	Author URI: http://www.sublimity.ca/
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+*/
+
+#travelog_menu li {
+	display: inline;
+	list-style: none;
+	text-align: center;
+	background: #ccc;
+	border: 1px solid #ccc;
+	border-bottom: none;
+	clear: both;
+	padding: .5em 1em;
+}
+
+#travelog_menu {
+	border: none;
+	margin: 1em 5% -12px 5%;
+	padding: 0px;
+}
+
+#travelog_menu li:hover {
+	background: #ddd;
+	color: #000;
+}
+
+#travelog_menu .current, #travelog_menu .current:hover {
+	background: #fff;
+	border: 1px solid #ccc;
+	border-bottom: none;
+	color: #000;
+	font-weight: bold;
+}
+
+#travelog_menu a {
+	border: none;
+	color: #000;
+	padding: 3px 5px 4px;
+}
+
+label {
+	font-weight: bold;
+	margin-right: 5px;
+}
+
+fieldset {
+	padding: 0 10px;
+	border: 1px solid #999;
+}
+
+fieldset div {
+	margin-bottom: 5px;
+}
