@@ -808,7 +808,7 @@ TravelogMap.prototype.createMarker = function(latlng, contents, icon) {
     var infoWindow = new google.maps.InfoWindow();
     google.maps.event.addListener(marker, 'click', function () {
         infoWindow.setContent(contents);
-        infoWindow.open(map,marker);
+        infoWindow.open(this.map,marker);
     });
        
     marker.setMap(this.map);
@@ -836,7 +836,7 @@ TravelogMap.prototype.createNumberedMarker = function(latlng, title, contents, n
     var infoWindow = new google.maps.InfoWindow();
     google.maps.event.addListener(marker, 'click', function () {
         infoWindow.setContent(contents);
-        infoWindow.open(map,marker);
+        infoWindow.open(this.map,marker);
     });
 
     marker.setMap(this.map);
