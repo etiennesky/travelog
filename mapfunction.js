@@ -19,9 +19,7 @@
 // ######### Variables to be set on calling page #########
 	var XMLAddress = ''; // path to the Travelog XML file (http://www.yoursite.com/your_wp_directiory/wp_contents/plugins/travelog/travelog_xml.php)
 	var isMapEnabled = true;
-	var isGMapsJSLoaded = (typeof(GMap2) != 'undefined') ? true : false; // Allow GoogleMaps to display on the page. Defaults to true if the GoogleMaps JS code is loaded, otherwise is false.
-	if (isGMapsJSLoaded && !GBrowserIsCompatible()) isGMapsJSLoaded = false; // Disable GoogleMap functions because the browser isn't supported
-	if (isGMapsJSLoaded) window.onbeforeunload = GUnload(); // Clean up the JS mess when you leave the page
+    var isGMapsJSLoaded = true; // TODO test with v3
 
 // ########### Static Master Variables ##################	
 	var tLocations = new Array(); // Master cache array containing all information about any location ever loaded
@@ -142,6 +140,7 @@ function travelogLoadXMLData(xmlDoc, dataHandler) {
 			tl.name = tripElems[i].getAttribute('name');
 			tl.start = tripElems[i].getAttribute('start');
 			tl.end = tripElems[i].getAttribute('end');
+            // TOD fix html content...
 			if(tripElems[i].getElementsByTagName('description')[0].firstChild) tl.description = tripElems[i].getElementsByTagName('description')[0].firstChild.nodeValue;
 			tl.stops = new Array();
 			// Process stops
@@ -184,6 +183,7 @@ function travelogLoadXMLLocations(xmlElems) {
 			tl.latitude = decimalRound(xmlElems[i].getAttribute('latitude'),5);
 			tl.longitude = decimalRound(xmlElems[i].getAttribute('longitude'),5);
 			tl.elevation = xmlElems[i].getAttribute('elevation');
+            // TODO fix html content...
 			if(xmlElems[i].getElementsByTagName('description')[0].firstChild) tl.description = xmlElems[i].getElementsByTagName('description')[0].firstChild.nodeValue;
 			// Address processing
 			var address = xmlElems[i].getElementsByTagName('address')[0];
@@ -428,12 +428,18 @@ TravelogDataForm.prototype.emptyRenderer = function(obj) {
 }
 // ################## GoogleMap Functions ########################
 
+function initializeMap(mapNum, mapID, dataFormObj, mapType, controls, showTypes, scale) {
+	// Setup the map instance
+	maps[mapNum] = new TravelogMap('maps['+mapNum+']', mapID, dataFormObj);
+	maps[mapNum].setUpMap(mapType, controls, showTypes, scale);
+	//icons = initializeFlags();
+    icons = Array();
+}
 
 function TravelogMap(objName, mapID, dataFormObj) {
 	this.contents = new Object();
 	this.contents.locations = new Object();
 	this.contents.trips = new Object();
-	if(isGMapsJSLoaded) this.map = new GMap2(document.getElementById(mapID));
 	this.markers = new Array();// Set up the array for markers
 	this.overlays = new Array();// Set up the array for polylines & other overlays
 	this.dataForm = dataFormObj;
@@ -441,23 +447,39 @@ function TravelogMap(objName, mapID, dataFormObj) {
 	this.divName = mapID;
 }
 
-
-function initializeMap(mapNum, mapID, dataFormObj, mapType, controls, showTypes, scale) {
-	// Setup the map instance
-	maps[mapNum] = new TravelogMap('maps['+mapNum+']', mapID, dataFormObj);
-	maps[mapNum].setUpMap(mapType, controls, showTypes, scale);
-	icons = initializeFlags();
-}
-
 TravelogMap.prototype.setUpMap = function(mapType, controls, showTypes, scale) {
-	if(isGMapsJSLoaded) {
-		this.map.setCenter(new GLatLng(0, 0), 1, this.mapType(mapType));
-		if(controls == 'large') this.map.addControl(new GLargeMapControl());
-		if(controls == 'small') this.map.addControl(new GSmallMapControl());
-		if(controls == 'zoom') this.map.addControl(new GSmallZoomControl());
-		if(showTypes) this.map.addControl(new GMapTypeControl());
-		if(scale) this.map.addControl(new GScaleControl());
-	}
+    if(isGMapsJSLoaded) {
+        // define map options from controls value
+        var zoomType = google.maps.ZoomControlStyle.DEFAULT;
+        var pan = true;
+        var streetView = true;
+		if(controls == 'large') {
+            zoomType = google.maps.ZoomControlStyle.LARGE;
+        }
+		else if(controls == 'small') {
+            zoomType = google.maps.ZoomControlStyle.DEFAULT;
+            pan = true;
+            streetView = false;
+        }
+		else if(controls == 'zoom') {
+            zoomType = google.maps.ZoomControlStyle.SMALL;
+            pan = false;
+            streetView = false;
+        }
+
+        this.map = new google.maps.Map(
+            document.getElementById(this.divName), {
+                center: new google.maps.LatLng(0, 0),
+                zoom: 1,
+                mapTypeId: this.mapType(mapType),
+                mapTypeControl: showTypes,
+                scaleControl: scale,
+                zoomControl: true,
+                zoomControlOptions: { style: zoomType },
+                panControl: pan,
+                streetViewControl: streetView
+	        });
+    }
 }
 
 TravelogMap.prototype.updateMap = function() {
@@ -480,17 +502,17 @@ TravelogMap.prototype.updateMap = function() {
 	
 	if(isMapEnabled && isGMapsJSLoaded) {
 		// Determine view bounds & position map appropriately (must be done before adding markers for G_MAP_TYPE!)
-		var mapBounds = new GLatLngBounds();
+		var mapBounds = new google.maps.LatLngBounds();
 		var shown = 0;
 		for (tLocationID in this.contents.locations) {
 			if(this.contents.locations[tLocationID] == 'l' || this.contents.locations[tLocationID] == 't') { // only if the location is currently displayed
-				mapBounds.extend(new GLatLng(tLocations[tLocationID].latitude, tLocations[tLocationID].longitude));
+				mapBounds.extend(new google.maps.LatLng(tLocations[tLocationID].latitude, tLocations[tLocationID].longitude));
 				shown++;
 			}
 		}
 		
 		if (shown > 1) {
-			this.map.centerAndZoomOnBounds(mapBounds, 20);
+			centerAndZoomOnBounds(this.map,mapBounds, 20);
 		}else if(shown === 1) {
 			this.map.setCenter(mapBounds.getSouthWest(),10);
 		}
@@ -523,12 +545,13 @@ TravelogMap.prototype.mapLocations = function(locationIDs) {
 TravelogMap.prototype.displayLocations = function(locationIDs) {
 	if(isMapEnabled && isGMapsJSLoaded) {
 		if(typeof(locationIDs) == 'string') {var locations = locationIDs.split(',');}else{var locations = locationIDs;}
+		i=0;
 		for (locKey in locations) {
 			tLocationID = locations[locKey];
-			var point = new GLatLng(tLocations[tLocationID].latitude, tLocations[tLocationID].longitude);
+			var point = new google.maps.LatLng(tLocations[tLocationID].latitude, tLocations[tLocationID].longitude);
 			var contents = tLocations[tLocationID].name;
-			this.markers[tLocationID] = createMarker(point, contents, tLocations[tLocationID].marker);
-			this.map.addOverlay(this.markers[tLocationID]);
+			this.markers[tLocationID] = this.createMarker(point, contents, tLocations[tLocationID].marker);
+			i++;
 		}
 	}
 	if(isMapEnabled) this.updateMap();
@@ -576,16 +599,16 @@ TravelogMap.prototype.parseAddedTrips = function(tripIds) {
 				locationID = tTrips[trips[tripkey]].stops[k].ID;
 				this.contents.locations[locationID] = 't';
 				if(isGMapsJSLoaded) {
-					tripPath[k] = new GLatLng(tLocations[locationID].latitude, tLocations[locationID].longitude);
+					tripPath[k] = new google.maps.LatLng(tLocations[locationID].latitude, tLocations[locationID].longitude);
 					if(typeof(this.markers[locationID]) != 'object') {
-						this.markers[locationID] = createMarker(tripPath[k], tLocations[locationID].name, tLocations[locationID].marker);
-						this.map.addOverlay(this.markers[locationID]);
+//						this.markers[locationID] = createMarker(tripPath[k], tLocations[locationID].name, tLocations[locationID].marker);
+						this.markers[locationID] = this.createMarker(tripPath[k], tLocations[locationID].name, ''); // TODO test with argument
 					}
 				}
 			}
 			if(isGMapsJSLoaded) {
-				this.overlays[trips[tripkey]] = new GPolyline(tripPath, '#ff0000', 2, 0.9);
-				this.map.addOverlay(this.overlays[trips[tripkey]]);
+				this.overlays[trips[tripkey]] = new google.maps.Polyline( 
+                    { map: this.map, path: tripPath, strokeColor: '#ff0000', strokeOpacity: 0.9, strokeWeight: 2 } );
 			}
 		}
 	}
@@ -622,41 +645,44 @@ TravelogMap.prototype.unmapTrips = function(tripIds) {
 TravelogMap.prototype.mapType = function(mapCode) {
 	switch(mapCode) {
 		case "map" :
-			return G_NORMAL_MAP;
+			return google.maps.MapTypeId.NORMAL;
 		case "satellite" :
-			return G_SATELLITE_MAP;
+			return google.maps.MapTypeId.SATELLITE;
 		case "hybrid" :
-			return G_HYBRID_MAP;
+			return google.maps.MapTypeId.HYBRID;
 	}
 }
 // ################## GoogleMap Helper Functions ########################
 
+// ################## GoogleMap Helper Functions ########################
+// TODO test this
 function initializeFlags(filePath) {
 	if(isGMapsJSLoaded) {
 		// Setup Travelog flag icons
-		var flagIcon = new GIcon();
-		flagIcon.shadow = filePath+"flag_shadow.png";
-		flagIcon.iconSize = new GSize(13, 19);
-		flagIcon.shadowSize = new GSize(19, 19);
-		flagIcon.iconAnchor = new GPoint(1, 18);
-		flagIcon.infoWindowAnchor = new GPoint(12, 3);
+		var flagIcon = new google.maps.Marker( {
+            //shadow : filePath+"flag_shadow.png"
+		    //iconSize = new GSize(13, 19),
+		    //shadowSize = new GSize(19, 19),
+		    //anchorPoint = new GPoint(1, 18),
+		    //infoWindowAnchor = new GPoint(12, 3),
+        } );
 		// baseIcon.infoShadowAnchor = new GPoint(18, 25);
 		
-		var blueFlagIcon = new GIcon(flagIcon); 
+		var blueFlagIcon = new google.maps.Marker(flagIcon); 
 			blueFlagIcon.image=filePath+"flag_blue.png";
-		var greenFlagIcon = new GIcon(flagIcon); 
+		var greenFlagIcon = new google.maps.Marker(flagIcon); 
 			greenFlagIcon.image=filePath+"flag_green.png";
-		var greyFlagIcon = new GIcon(flagIcon); 
+		var greyFlagIcon = new google.maps.Marker(flagIcon); 
 			greyFlagIcon.image=filePath+"flag_grey.png";
-		var orangeFlagIcon = new GIcon(flagIcon); 
+		var orangeFlagIcon = new google.maps.Marker(flagIcon); 
 			orangeFlagIcon.image=filePath+"flag_orange.png";
-		var pinkFlagIcon = new GIcon(flagIcon); 
+		var pinkFlagIcon = new google.maps.Marker(flagIcon); 
 			pinkFlagIcon.image=filePath+"flag_pink.png";
-		var purpleFlagIcon = new GIcon(flagIcon); 
+		var purpleFlagIcon = new google.maps.Marker(flagIcon); 
 			purpleFlagIcon.image=filePath+"flag_purple.png";
-		var redFlagIcon = new GIcon(flagIcon); 
+		var redFlagIcon = new google.maps.Marker(flagIcon); 
 			redFlagIcon.image=filePath+"flag_red.png";
-		var yellowFlagIcon = new GIcon(flagIcon); 
+		var yellowFlagIcon = new google.maps.Marker(flagIcon); 
 			yellowFlagIcon.image=filePath+"flag_yellow.png";
 		
 		// Create an array of the icons so they are easily accessible
@@ -676,42 +702,46 @@ function initializeFlags(filePath) {
 	}
 }
 
-
-if(isMapEnabled && isGMapsJSLoaded) {
-	// Extend the GMap object with a center and zoom function that uses bounds to determine the view
-	GMap2.prototype.centerAndZoomOnBounds = function(bounds, padPercent) { 
-		// Function for setting map display to a certain bounds box
-		var sw = bounds.getSouthWest();
-		var ne = bounds.getNorthEast();
-		var scaler = 1+padPercent/100;
-		var boundsSpan = bounds.toSpan();
-		var newSpan = new GLatLng(boundsSpan.lat()*scaler,boundsSpan.lng()*scaler);
-		var spanDiff = new GLatLng((newSpan.lat()-boundsSpan.lat())/2,(newSpan.lng()-boundsSpan.lng())/2);
-		var newBounds = new GLatLngBounds(new GLatLng(sw.lat()-spanDiff.lat(),sw.lng()-spanDiff.lng()),new GLatLng(ne.lat()+spanDiff.lat(),ne.lng()+spanDiff.lng()));
-		var newCenter = new GLatLng(sw.lat()+boundsSpan.lat()/2, sw.lng()+boundsSpan.lng()/2);
-		var newZoom = this.getBoundsZoomLevel(newBounds);
-		if (this.getZoom() != newZoom) { 
-			this.setCenter(newCenter, newZoom); 
-		}else{ 
-			this.panTo(newCenter); 
-		}
-	}
-}
-
-function createMarker(latlng, contents, icon) {
+TravelogMap.prototype.createMarker = function(latlng, contents, icon) {
 	// Creates a marker whose info window displays the given number
-  if(icon != '') {
-	  var marker = new GMarker(latlng, {icon: icons[icon], title: contents});
-  }else{
-	  var marker = new GMarker(latlng, {title: contents});
-  }
+    if(icon != '') {
+	    var marker = new google.maps.Marker( { 
+            position : latlng, 
+            title: contents
+        } );
+    }else{
+	    var marker = new google.maps.Marker( { 
+            position : latlng, 
+            title: contents,
+            icon : icon//,
+            //shadow : "flag_shadow.png"
+        } );
+    }
 
-  GEvent.addListener(marker, "click", function() {
-	marker.openInfoWindowHtml(contents);
-  });
+    var infoWindow = new google.maps.InfoWindow();
+    google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.setContent(contents);
+        infoWindow.open(map,marker);
+    });
+       
+    marker.setMap(this.map);
 
-  return marker;
+    return marker;
 }
+
+// Function for setting map display to a certain bounds box
+function centerAndZoomOnBounds(map,bounds, padPercent) { 
+	var sw = bounds.getSouthWest();
+	var ne = bounds.getNorthEast();
+	var scaler = 1+padPercent/100;
+	var boundsSpan = bounds.toSpan();
+	var newSpan = new google.maps.LatLng(boundsSpan.lat()*scaler,boundsSpan.lng()*scaler);
+	var spanDiff = new google.maps.LatLng((newSpan.lat()-boundsSpan.lat())/2,(newSpan.lng()-boundsSpan.lng())/2);
+	var newBounds = new google.maps.LatLngBounds(new google.maps.LatLng(sw.lat()-spanDiff.lat(),sw.lng()-spanDiff.lng()),
+                                                     new google.maps.LatLng(ne.lat()+spanDiff.lat(),ne.lng()+spanDiff.lng()));
+    map.fitBounds(newBounds);
+}
+
 
 // ################## General Helper Functions ########################
 

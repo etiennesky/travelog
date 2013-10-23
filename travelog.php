@@ -906,7 +906,7 @@ function map_type ($map_type, $context) {
 		
 		// Output HTML Code
 		$htmlCode = '
-			<script src="http://maps.google.com/maps?file=api&v=2&key='.get_option('travelog_googlemaps_key_embedded').'" type="text/javascript"></script>
+    	    <script src="//maps.googleapis.com/maps/api/js?sensor=false&v=3.exp&key='.get_option('travelog_googlemaps_key').'" type="text/javascript"></script>
 			<script type="text/javascript" src="'.get_bloginfo('wpurl').'/wp-content/plugins/travelog/mapfunction.js"></script>
 			<script type="text/javascript"><!--
 				var XMLAddress = "'.get_settings('siteurl').'/wp-content/plugins/travelog/travelog_xml.php";
