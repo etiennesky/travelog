@@ -49,7 +49,7 @@
 	
 	<div id="travelog_explorer">
 		<h2>Travelog Explorer</h2>
-		<script type="text/javascript" src="<?php bloginfo('url');?>/wp-content/plugins/travelog/mapfunction.js"></script>
+		<script type="text/javascript" src="<?php bloginfo('wpurl');?>/wp-content/plugins/travelog/mapfunction.js"></script>
 		<form method="post" id="travelogExplorerForm">
 			<fieldset>
 				<legend>Search Travelog</legend>

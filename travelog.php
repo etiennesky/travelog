@@ -206,7 +206,7 @@ class Travelog {
 	if ($_GET['page'] == 'travelog.php') {
 		// Outputs the CSS & HTML that makes the nice menu on the Manage - Travelog page
 		?>
-		<link rel="stylesheet" href="<?php bloginfo('url');?>/wp-content/plugins/travelog/travelog_admin.css" type="text/css" />
+		<link rel="stylesheet" href="<?php bloginfo('wpurl');?>/wp-content/plugins/travelog/travelog_admin.css" type="text/css" />
 		<ul id="travelog_menu">
 			<li<?php if ('locations' == $_GET['area'] || !isset($_GET['area'])){ echo ' class="current"'; }?>><a href="edit.php?page=travelog.php">Locations</a></li>
 			<li<?php if ('trips' == $_GET['area']){ echo ' class="current"'; }?>><a href="edit.php?page=travelog.php&area=trips">Trips</a></li>
@@ -414,7 +414,7 @@ class Travelog {
 					}
 				}
 			case '2.0' :
-				remove_option('travelog_googlemaps_key_embedded');
+				delete_option('travelog_googlemaps_key_embedded');
 		}
 
 	}
@@ -905,7 +905,7 @@ function map_type ($map_type, $context) {
 		// Output HTML Code
 		$htmlCode = '
 			<script src="http://maps.google.com/maps?file=api&v=2&key='.get_option('travelog_googlemaps_key_embedded').'" type="text/javascript"></script>
-			<script type="text/javascript" src="'.get_settings('siteurl').'/wp-content/plugins/travelog/mapfunction.js"></script>
+			<script type="text/javascript" src="'.get_bloginfo('wpurl').'/wp-content/plugins/travelog/mapfunction.js"></script>
 			<script type="text/javascript"><!--
 				var XMLAddress = "'.get_settings('siteurl').'/wp-content/plugins/travelog/travelog_xml.php";
 				//--></script>
@@ -969,7 +969,7 @@ function map_type ($map_type, $context) {
 				function travelog_open() {
 					var form = 'post';
 					var field = 'content';
-					var url = '<?php get_bloginfo("siteurl"); ?>/wp-includes/js/tinymce/plugins/mcetravelog/travelog_mce.php?form='+form+'&field='+field+'&tinymce=0';
+					var url = '<?php get_bloginfo("wpurl"); ?>/wp-includes/js/tinymce/plugins/mcetravelog/travelog_mce.php?form='+form+'&field='+field+'&tinymce=0';
 					var name = 'travelog';
 					var w = 550;
 					var h = 500;

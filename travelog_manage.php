@@ -191,7 +191,7 @@
 	Travelog::adminheader();
 ?>
 
-<script type="text/javascript" src="<?php bloginfo('url');?>/wp-content/plugins/travelog/mapfunction.js"></script>
+<script type="text/javascript" src="<?php bloginfo('wpurl');?>/wp-content/plugins/travelog/mapfunction.js"></script>
 <style type="text/css">
 		<!--
 	#travelogResultsTable {

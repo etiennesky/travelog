@@ -49,7 +49,7 @@
 		// Show Travelog Manager submeny
 		Travelog::adminheader();
   ?>
-  		<script type="text/javascript" src="<?php bloginfo('url');?>/wp-content/plugins/travelog/mapfunction.js"></script>
+  		<script type="text/javascript" src="<?php bloginfo('wpurl');?>/wp-content/plugins/travelog/mapfunction.js"></script>
   		<script type="text/javascript">
   			function formValidate() {
   				if(document.editLocationForm.edit_new_visit.value == 'yyyy/mm/dd hh:mm') document.editLocationForm.edit_new_visit.value = '';

@@ -36,7 +36,7 @@
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="travelog_create_new_location" value="1" onclick="var new_details = document.getElementById('new_location'); var add_dates = document.getElementById('add_dates'); if(this.checked){new_details.style.display = 'block'; add_dates.style.display = 'none';document.getElementById('travelog_location_id').value='';}else{new_details.style.display = 'none'; add_dates.style.display = 'block';}" /> Create new location
 			
 			<!-- Autocomplete code adapted from Gallery, http://gallery.menalto.com/ //-->
-			<script type="text/javascript" src="<?php bloginfo('url');?>/wp-content/plugins/travelog/mapfunction.js"></script>
+			<script type="text/javascript" src="<?php bloginfo('wpurl');?>/wp-content/plugins/travelog/mapfunction.js"></script>
 			<script type="text/javascript">
 				var XMLAddress = '<?=get_settings("siteurl")?>/wp-content/plugins/travelog/travelog_xml.php';
 				var locationChooser = new TravelogDataForm('locationChooser', 'post', null, '', '', 'autocomplete', '', 'travelogLocationSelector', '', '', '');

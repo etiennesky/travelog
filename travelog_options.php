@@ -46,7 +46,6 @@
 		}
 	-->
 	</style>
-	<script type="text/javascript" src="<?php echo get_settings('siteurl')?>/wp-content/plugins/travelog/mapfunction.js"></script>
 	<form id="travelogOptions" method="post" onsubmit="formValidate();">
 	<div class="wrap">
 		<p style="float: right;margin-top: 2px;"><a href="edit.php?page=travelog.php" >Manage Travelog Locations</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
