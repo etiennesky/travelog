@@ -46,7 +46,7 @@
 					$trips = array($tripID);
 				}else{
 					$trips = explode(",",$location->trips);
-					if(!in_array($tripID, $trips))$trips = array_merge($trips, $tripID);
+					if(!in_array($tripID, $trips))$trips = array_merge($trips, array($tripID));
 				}
 				$query = "UPDATE " . DB_TABLE . " SET dates_visited = '$location->dates_visited', ";
 				$query .= "trips = '". implode(',',$trips)."' ";

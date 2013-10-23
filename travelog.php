@@ -438,7 +438,7 @@ class Travelog {
 	function get_locations($category = '', $limit = '', $order = 'id', $search = '', $ids = '') {
 		// Returns an array of objects, one for each of the locations in the Travelog database
 		global $wpdb;
-		
+
 		// Prepare SQL
 		$query_sql = "SELECT tl.*, CHAR_LENGTH(tl.dates_visited) as visits_length, count(pm.meta_value) as posts_from FROM ".DB_TABLE." tl LEFT JOIN $wpdb->postmeta pm ON tl.id = pm.meta_value";
 		
@@ -629,7 +629,7 @@ class Travelog {
 		global $wpdb;
 		
 		$new_location_id = $_POST["travelog_location_id"];
-		
+
 		// Create a new location if requested
 		if($_POST['travelog_create_new_location'] && $_POST["travelog_name"] != "") {
 				// Process the incoming form values

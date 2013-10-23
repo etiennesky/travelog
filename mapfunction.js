@@ -208,7 +208,7 @@ function travelogLoadXMLLocations(xmlElems) {
 				temp[j] = new Array();
 				temp[j]['id'] = posts[j].getAttribute('id');
 				temp[j]['comments'] = posts[j].getAttribute('comments');
-				temp[j]['title'] = posts[j].firstChild;
+				temp[j]['title'] = posts[j].firstChild.nodeValue;
 			}
 			tl.posts = temp;
 			if(xmlElems[i].getElementsByTagName('marker')[0].firstChild) tl.marker = xmlElems[i].getElementsByTagName('marker')[0].firstChild.nodeValue;
@@ -590,13 +590,64 @@ TravelogMap.prototype.mapTrips = function(tripIds) {
 	}
 }
 
+TravelogMap.prototype.getLocationInfo = function(locationID) {
+	var tmpStr="", tmpStr2="";
+    var loc = tLocations[locationID];
+
+    tmpStr = "<center><b>"+loc.name+"</b></center>";
+
+    // address
+    if ( loc.address != '' && typeof(loc.address) != 'undefined' )
+        tmpStr += loc.address + "<br>";
+    if ( loc.city != '' && typeof(loc.city) != 'undefined' )
+        tmpStr2 += loc.city;
+    if ( loc.country != '' && typeof(loc.country) != 'undefined' ) {
+        if ( tmpStr2 != '' ) tmpStr2 += ", ";
+        tmpStr2 += loc.country;
+    }
+    if ( loc.state != '' && typeof(loc.state) != 'undefined' ) {
+        if ( tmpStr2 != '' ) tmpStr2 += ", ";
+        tmpStr2 += loc.state;
+    }
+    tmpStr += tmpStr2;
+    if ( tmpStr2 != "" ) tmpStr += "<br>";
+    tmpStr2 = "";
+
+    // descr.
+    if ( loc.description != '' && typeof(loc.description) != 'undefined' )
+        tmpStr += "<br>" + loc.description + "<br>";
+
+    // posts + visits
+    if ( loc.posts.length > 0 ) {
+        tmpStr += "<br>";
+        if ( loc.posts.length > 1 )
+            tmpStr += loc.posts.length + " posts : ";
+        else
+            tmpStr += " 1 post : ";
+        for( i=0; i<loc.posts.length; i++ ) {
+            tmpStr += "<a href=index.php?p=" + loc.posts[i]['id'] + ">" + loc.posts[i]['title'] + "</a> ";
+        }
+    }
+    if ( loc.visits.length > 0 ) {
+        tmpStr += "<br>";
+        if ( loc.visits.length > 1 )
+            tmpStr += loc.visits.length + " visits : ";
+        else
+            tmpStr += " 1 visit : ";
+        for( i=0; i<loc.visits.length; i++ ) {
+            tmpStr += loc.visits[i]['date'] + " ";
+        }
+    }
+    
+    return tmpStr;
+}
+
 TravelogMap.prototype.parseAddedTrips = function(tripIds) {
 	var locationID = '';
 	if(tripIds.length > 0) {
 		if(typeof(tripIds) == 'string') {var trips = tripIds.split(',');}else{var trips = tripIds;}
 		for(tripkey in trips) {
 			var tripPath = new Array();
-			var tmpStr="";
 			for(k = 0; k < tTrips[trips[tripkey]].stops.length; k++) {
 				locationID = tTrips[trips[tripkey]].stops[k].ID;
 				this.contents.locations[locationID] = 't';
@@ -604,8 +655,7 @@ TravelogMap.prototype.parseAddedTrips = function(tripIds) {
 					tripPath[k] = new google.maps.LatLng(tLocations[locationID].latitude, tLocations[locationID].longitude);
 					if(typeof(this.markers[locationID]) != 'object') {
 //						this.markers[locationID] = createMarker(tripPath[k], tLocations[locationID].name, tLocations[locationID].marker);
-                        tmpStr="<center><b>"+tLocations[locationID].name+"</b></center>";
-						this.markers[locationID] = this.createNumberedMarker(tripPath[k], tLocations[locationID].name, tmpStr, k+1); 
+						this.markers[locationID] = this.createNumberedMarker(tripPath[k], tLocations[locationID].name, this.getLocationInfo(locationID), k+1); 
 					}
 				}
 			}
