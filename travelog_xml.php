@@ -76,8 +76,9 @@
 	</trip>
 	<? } // end foreach trip ?>
 	<locations>
-		<? foreach($stop_locations as $locationID => $location) { 
-			dumpLocationXML($location);
+		<? foreach($stop_locations as $locationID => $location) {
+               //limit location visits during this trip only 
+               dumpLocationXML($location,$trip->start_date,$trip->end_date);
 		} // end foreach stop locations ?>		
 		</locations>
 </trips>
@@ -95,7 +96,7 @@ if($locations) {?><locations>
 
 // Function to dump the location XML
 
-function dumpLocationXML($location) { 
+function dumpLocationXML($location,$start_date='',$end_date='') { 
 	$location->get_posts();
 	?>
 	<location id="<?=$location->id?>" latitude="<?=$location->latitude?>" longitude="<?=$location->longitude?>" elevation="<?=$location->elevation?>" name="<?=htmlspecialchars($location->name)?>">
@@ -103,7 +104,13 @@ function dumpLocationXML($location) {
 		<visits><?php if($location->dates_visited) {
 				$visits = explode(',', $location->dates_visited);
 				foreach($visits as $visit) {
-					list($date, $time) = explode(" ", $visit); ?><visit date="<?=$date?>" time="<?=$time?>"/><? } //close visits loop 
+                    // quick hack to limit visits to given dates, use when one trip is queried only
+                    if( strtotime($visit) >= strtotime($start_date) &&
+                        strtotime($visit) <= strtotime($end_date) ) {
+                            list($date, $time) = explode(" ", $visit);
+                            echo "<visit date='".$date."' time='".$time."'/>";
+                    }
+                } //close visits loop 
 				} // close if visits
 		?></visits>
 		<description><?=htmlspecialchars($location->description)?></description>
