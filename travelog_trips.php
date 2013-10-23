@@ -86,6 +86,7 @@
 		// Array of variables to process, with variable name as the key and its default value as the value
 		$allowed_vars = get_class_vars('trip_db');
 		
+        $trip = new trip();
 		// The heavy lifting, check if each allowed_var was passed and is not empty
 		foreach($allowed_vars as $var => $default) {
 			if(array_key_exists($formvar_prefix.$var, $_POST) && '' != $_POST[$formvar_prefix.$var]) {

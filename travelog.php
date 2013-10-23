@@ -115,6 +115,8 @@ class location extends location_db {
 				$this->$varname = $loadArray[$varname];
 			}
 		}
+        // TODO check this
+        $this->contents = "<b>" . $this->name . "</b>";
 	}
 	
 	function get_posts() {
@@ -353,7 +355,7 @@ class Travelog {
 		}elseif(!in_array($table_prefix . 'travelog_trips', $tables)) {
 			$version = '1.1';
 		}else{
-			$version = '2.0';
+			$version = '2.5';
 		}
 		
 		// Initialize/update database - always runs & automatically detects what changes are necessary
@@ -916,6 +918,16 @@ function map_type ($map_type, $context) {
 				v\:* { behavior:url(#default#VML); }
 				//--></style>';
 		
+        if ($map_params['type'] == 'editLocation') {
+            //https://developers.google.com/maps/documentation/javascript/examples/geocoding-simple
+        $htmlCode .= '       
+            <div id="panel">
+            <input id="address" type="textbox" value="">
+            <input type="button" value="Lookup" onclick="codeAddress(maps['.$travelogNumMaps.'],\'address\')">
+            <input type="button" value="Set values" onclick="updateAddress(maps['.$travelogNumMaps.'],\'address\',\'edit_name\')">
+            </div>';
+        }
+
 		$htmlCode .= '
 			<div id="map'.$travelogNumMaps.'" style="width:'.$map_params['width'].'px;height:'.$map_params['height'].'px;margin:0 auto;padding:0;border: 1px solid #999;"></div>
 			<script type="text/javascript"><!--

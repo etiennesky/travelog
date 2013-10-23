@@ -77,7 +77,7 @@ $location = new location();
         		<p style="float: right;margin-top: 2px;"><a href="options-general.php?page=travelog.php">Edit Travelog Options</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
                 <h2><?php if('add' == $action) { echo __("Add Location", DOMAIN); }else{ echo __("Edit Location", DOMAIN); } ?></h2>
 				<div style="float: right; width: 400px; height: 400px; margin-right: 20px; clear: right;" id="mapContainer">
-				<?php echo Travelog::embed_map(array('ids'=>$location->id,'width'=>400,'height'=>400));?>
+				<?php echo Travelog::embed_map(array('ids'=>$location->id,'width'=>400,'height'=>400,'type'=>'editLocation'));?>
 				</div>
 				<script type="text/javascript">
 					TravelogMap.prototype.setLocCoords = function() {
@@ -140,13 +140,13 @@ $location = new location();
 									<td><label for="edit_address"><?=__('Address', DOMAIN)?></label></td><td><input type="text" name="edit_address" value="<?=$location->address?>" size="30" /></td>
 								 </tr>
 								 <tr class="alternate">
-									<td><label for="edit_city"><?=__('City', DOMAIN)?></label></td><td><input type="text" name="edit_city" value="<?=$location->city?>" size="15" /></td>
+									<td><label for="edit_city"><?=__('City', DOMAIN)?></label></td><td><input type="text" id="edit_city" name="edit_city" value="<?=$location->city?>" size="15" /></td>
 								 </tr>
 								 <tr>
-									<td><label for="edit_state"><?=__('State', DOMAIN)?></label></td><td><input type="text" name="edit_state" value="<?=$location->state?>" size="15" /></td>
+									<td><label for="edit_state"><?=__('State', DOMAIN)?></label></td><td><input type="text" id="edit_state" name="edit_state" value="<?=$location->state?>" size="15" /></td>
 								 </tr>
 								 <tr class="alternate">
-									<td><label for="edit_country"><?=__('Country', DOMAIN)?></label></td><td><input type="text" name="edit_country" value="<?=$location->country?>" size="15" /></td>
+									<td><label for="edit_country"><?=__('Country', DOMAIN)?></label></td><td><input type="text" id="edit_country" name="edit_country" value="<?=$location->country?>" size="15" /></td>
 								 </tr>
 								</tbody>
 							</table>
@@ -165,18 +165,22 @@ $location = new location();
 								 </tr>
 								 <tr>
 									<?php $elev_unit = get_option('travelog_elevation_unit'); ?>
-									<td><label for="edit_elevation"><?=__("Elevation ($elev_unit)", DOMAIN)?></label></td><td><input type="text" name="edit_elevation" value="<?=$location->elevation ?>" size="10" /></td>
+									<td><label for="edit_elevation"><?=__("Elevation ($elev_unit)", DOMAIN)?></label></td><td><input type="text" id="edit_elevation" name="edit_elevation" value="<?=$location->elevation ?>" size="10" /></td>
 								</tr>
 								<tr>
+<!-- // TODO fix this
 									<td colspan="2"><input type="checkbox" name="interactive_set_coords" id="interactive_set_coords" onclick="toggle_marker();" value="1"> <label for="interactive_set_coords" style="font-weight: normal;"><?=__('Add/update coordinates using map', DOMAIN)?></label></td>
 								</tr>
+-->
 							</tbody>
 						</table>
+<!-- // TODO fix this
 						<?php if(get_option('travelog_show_edit_map')) : ?>&nbsp;&nbsp;<input type="checkbox" name="interactive_set_coords" id="interactive_set_coords" onclick="toggle_marker();" value="1"> <label for="edit_country" style="font-weight: normal;"><?=__('Add/update coordinates using map', DOMAIN)?></label><?php endif; ?>
+-->
 					</div>
 				</fieldset>
 				<fieldset name="visits_form" style="width: 33%;margin: 5px 0;">
-					<?php $visits = $location->get_datetimes();  if(count($visits) === 1) $message = 'Visit'; else $message = 'Visits';?>
+					<?php $visits = ($action=='edit') ? $location->get_datetimes() : 0; if(count($visits) === 1) $message = 'Visit'; else $message = 'Visits';?>
 					<legend><strong><?=count($visits)?> <?= __($message, DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="showHide('visit_info', this);"><?php if($visit_info == __('show', DOMAIN)) {echo __('hide', DOMAIN);}else{echo __('show', DOMAIN);} ?></a>)</legend>
 					<div id="visit_info" style="display: <?php if($visit_info =='show') {echo 'block';}else{echo 'none';} ?>;">
 						<input type="hidden" name="edit_dates_visited" value="<?= $location->dates_visited ?>" />

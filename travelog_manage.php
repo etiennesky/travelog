@@ -85,7 +85,7 @@ $location = new location();
 		
 		// Add new date visited if one was passed
 		if($_POST['edit_new_visit'] != "" && $_POST['edit_new_visit'] != 'yyyy/mm/dd hh:mm') {
-			$dates = array_merge($dates, $_POST['edit_new_visit']);
+			$dates = array_merge($dates, array($_POST['edit_new_visit']));
 		}
 		
 		if('' != $dates && count($dates) > 0) {

@@ -550,8 +550,8 @@ TravelogMap.prototype.displayLocations = function(locationIDs) {
 			tLocationID = locations[locKey];
 			var point = new google.maps.LatLng(tLocations[tLocationID].latitude, tLocations[tLocationID].longitude);
 			var contents = tLocations[tLocationID].name;
-//			this.markers[tLocationID] = this.createMarker(point, contents, tLocations[tLocationID].marker);
-			this.markers[tLocationID] = this.createNumberedMarker(point, contents, contents, i+1);
+			this.markers[tLocationID] = this.createMarker(point, contents, tLocations[tLocationID].marker);
+//			this.markers[tLocationID] = this.createNumberedMarker(point, contents, contents, i+1);
 			i++;
 		}
 	}
@@ -603,7 +603,7 @@ TravelogMap.prototype.parseAddedTrips = function(tripIds) {
 				if(isGMapsJSLoaded) {
 					tripPath[k] = new google.maps.LatLng(tLocations[locationID].latitude, tLocations[locationID].longitude);
 					if(typeof(this.markers[locationID]) != 'object') {
-//						this.markers[locationID] = createMarker(tripPath[k], tLocations[locationID].name, tLocations[locationID].marker); // TODO test with argument
+//						this.markers[locationID] = createMarker(tripPath[k], tLocations[locationID].name, tLocations[locationID].marker);
                         tmpStr="<center><b>"+tLocations[locationID].name+"</b></center>";
 						this.markers[locationID] = this.createNumberedMarker(tripPath[k], tLocations[locationID].name, tmpStr, k+1); 
 					}
@@ -655,9 +655,93 @@ TravelogMap.prototype.mapType = function(mapCode) {
 			return google.maps.MapTypeId.HYBRID;
 	}
 }
-// ################## GoogleMap Helper Functions ########################
 
 // ################## GoogleMap Helper Functions ########################
+
+function codeAddress (travelMap,input) {
+    var geocoder  = new google.maps.Geocoder();
+    var address = document.getElementById(input).value;
+    if ( address == '') return;
+
+    geocoder.geocode( { 'address': address}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            travelMap.map.setCenter(results[0].geometry.location);
+            if ( travelMap.geocoderMarker == null ) {
+                travelMap.geocoderMarker = new google.maps.Marker({
+                    map: travelMap.map,
+                    position: results[0].geometry.location
+                });
+            }
+            else {
+                travelMap.geocoderMarker.setPosition( results[0].geometry.location );
+            }
+        } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+        }
+    });
+    // TODO add lat/lon and reverse lookup info to popup (this is done in updateAdress)
+}
+
+function updateAddress (travelMap,input,edit_name) {
+    var geocoder  = new google.maps.Geocoder();
+    var address = document.getElementById(input).value;
+    if ( address == '') return;
+
+    // lookup lon/lat for given address
+    geocoder.geocode( { 'address': address}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+
+            // update name + lon/lat
+            document.getElementById(edit_name).value = address;
+            var loc = results[0].geometry.location;
+            document.getElementById("edit_latitude").value = loc.lat();
+            document.getElementById("edit_longitude").value = loc.lng();
+
+            // lookup elevation and update
+            var elevator = new google.maps.ElevationService();
+            var locations = [loc];
+            var positionalRequest = { 'locations': locations };
+            elevator.getElevationForLocations(positionalRequest, function(results, status) {
+                if (status == google.maps.ElevationStatus.OK) {
+                    if (results[0]) {
+                        document.getElementById("edit_elevation").value = Math.round(results[0].elevation);
+                    } else {
+                        alert("No results found");
+                    }
+                } else {
+                    alert("Elevation service failed due to: " + status);
+                }
+            });
+
+            //reverse lookup to fill in country, etc.
+            geocoder.geocode({'latLng': loc}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        res = results[1]
+	                    for(i=0;i<res.address_components.length;i++) {
+                            switch ( res.address_components[i].types[0] ) {
+                            case "locality":
+                                document.getElementById("edit_city").value = res.address_components[i].long_name;
+                                document.getElementById(edit_name).value = res.address_components[i].long_name;
+                            case "administrative_area_level_1":
+                                document.getElementById("edit_state").value = res.address_components[i].long_name;
+                            case "country":
+                                document.getElementById("edit_country").value = res.address_components[i].long_name;
+
+                            }
+                        }
+                    }
+                } else {
+                    alert("Geocoder failed due to: " + status);
+                }
+            });
+
+        } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+        }
+    });
+}
+
 // TODO test this
 function initializeFlags(filePath) {
 	if(isGMapsJSLoaded) {
