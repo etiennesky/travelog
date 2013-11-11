@@ -111,8 +111,25 @@
 				}
 			-->
 			</style>
-		
-		<form method="post" name="editTripForm" id="editTripForm" action="tools.php?page=travelog.php&area=trips&action=<?= $todo?>">
+
+        <?php wp_enqueue_script('jquery-ui-datepicker'); 
+	 	      wp_enqueue_style('jquery-style', 'http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css'); ?>
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery('.mydatepicker').datepicker({
+        dateFormat : 'yy/mm/dd'
+    });
+});
+  			function formValidate() {
+  				if(document.tripsForm.edit_start_date.value == 'yyyy/mm/dd') document.tripsForm.edit_start_date.value = '';
+  				if(document.tripsForm.edit_end_date.value == 'yyyy/mm/dd') document.tripsForm.edit_end_date.value = '';
+  				return true;
+  			}
+  		</script>
+
+
+		<form method="post" name="editTripForm" id="editTripForm" action="tools.php?page=travelog.php&area=trips&action=<?= $todo?>" onsubmit="return formValidate()">
 			<div class="wrap">
         		<p style="float: right;margin-top: 2px;"><a href="options-general.php?page=travelog.php" >Edit Travelog Options</a> &raquo;&nbsp;&nbsp;&nbsp;&nbsp;</p>
                 <h2><?php if('add' == $action) { echo __("Add Trip", DOMAIN); }else{ echo __("Edit Trip", DOMAIN); } ?></h2>
@@ -130,10 +147,10 @@
 							<td><label for="edit_name"><?=__('Name', DOMAIN)?></label></td><td><input type="text" name="edit_name" value="<?=$trip->name ?>" size="18" /></td>
                          </tr>
                          <tr class="alternate">
-							<td><label for="edit_start_date"><?=__('Start Date', DOMAIN)?></label></td><td><input type="text" name="edit_start_date" id="edit_start_date" size="18" value="<?=$trip->start_date ?>" onfocus="if(this.value == 'yyyy/mm/dd hh:mm') this.value = '';"/></td>
+							<td><label for="edit_start_date"><?=__('Start Date', DOMAIN)?></label></td><td><input type="text" name="edit_start_date" id="edit_start_date" class="mydatepicker" size="10" value="<?=$trip->start_date ?>" /></td>
                          </tr>
                          <tr>
-							<td><label for="edit_end_date"><?=__('End Date', DOMAIN)?></label></td><td><input type="text" name="edit_end_date" id="edit_end_date" size="18" value="<?=$trip->end_date ?>" onfocus="if(this.value == 'yyyy/mm/dd hh:mm') this.value = '';"/></td>
+							<td><label for="edit_end_date"><?=__('End Date', DOMAIN)?></label></td><td><input type="text" name="edit_end_date" id="edit_end_date" class="mydatepicker" size="10" value="<?=$trip->end_date ?>" /></td>
                         </tr>
                         <tr>
 							<td><label for="edit_end_date"><?=__('Total Distance', DOMAIN)?></label></td><td><?php echo $trip->get_distance();?>km</td>

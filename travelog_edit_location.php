@@ -53,9 +53,16 @@ $location = new location();
 		Travelog::adminheader();
   ?>
   		<script type="text/javascript" src="<?php bloginfo('wpurl');?>/wp-content/plugins/travelog/mapfunction.js"></script>
+
+        <?php wp_enqueue_script('jquery-ui-datepicker'); 
+	 	      wp_enqueue_style('jquery-style', 'http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css'); ?>
+
   		<script type="text/javascript">
   			function formValidate() {
-  				if(document.editLocationForm.edit_new_visit.value == 'yyyy/mm/dd hh:mm') document.editLocationForm.edit_new_visit.value = '';
+  				if(document.editLocationForm.edit_new_visit.value == 'yyyy/mm/dd') document.editLocationForm.edit_new_visit.value = '';
+  				if(document.editLocationForm.edit_new_visit_time.value == 'hh:mm') document.editLocationForm.edit_new_visit_time.value = '';
+  				if(document.editLocationForm.edit_new_visit_time.value != '') 
+					document.editLocationForm.edit_new_visit.value = document.editLocationForm.edit_new_visit.value+' '+document.editLocationForm.edit_new_visit_time.value;
   				return true;
   			}
   			
@@ -69,6 +76,11 @@ $location = new location();
 					obj.style.display = 'none';
 				}
   			}
+jQuery(document).ready(function() {
+    jQuery('#edit_new_visit').datepicker({
+        dateFormat : 'yy/mm/dd'
+    });
+});
   		</script>
   	
 		<form method="post" name="editLocationForm" action="tools.php?page=travelog.php&area=locations&action=<?= $todo?>" onsubmit="return formValidate()">
@@ -210,7 +222,10 @@ $location = new location();
 							echo "<p>This location has never been visited</p>";
 							endif;
 						endif; ?>
-						<label for="edit_new_visit"><?= __('Add Visit', DOMAIN) ?>:</label></td><td><input type="text" name="edit_new_visit" id="edit_new_visit" size="18" value="yyyy/mm/dd hh:mm" onfocus="if(this.value == 'yyyy/mm/dd hh:mm') this.value = '';"/>&nbsp;&nbsp;<input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('edit_new_visit'); if(this.checked){new_date.value ='<?=date('Y/m/d H:i'); ?>';}else{if(new_date.value == '<?=date('Y/m/d H:i'); ?>'){new_date.value ='';}}" /> <?= __('Today', DOMAIN) ?>
+                         <br>
+						<label for="edit_new_visit"><?= __('Add Visit', DOMAIN) ?>:</label></td><td><input type="text" name="edit_new_visit" id="edit_new_visit" size="10" value="yyyy/mm/dd" &nbsp;&nbsp;>
+						&nbsp;<?= __('at', DOMAIN) ?>:&nbsp;<input type="text" name="edit_new_visit_time" id="edit_new_visit_time" size="10" value="hh:mm" onfocus="if(this.value == 'hh:mm') this.value = '';"/>
+                        &nbsp;<input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('edit_new_visit'); if(this.checked){new_date.value ='<?=date('Y/m/d'); ?>';}else{if(new_date.value == '<?=date('Y/m/d'); ?>'){new_date.value ='';}}" /> <?= __('Today', DOMAIN) ?>
 					</div>
 				</fieldset>
 				<fieldset name="trips_form" style="width: 33%;margin: 5px 0;">

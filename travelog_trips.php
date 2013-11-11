@@ -136,13 +136,19 @@
 	Travelog::adminheader();
 	
 ?>
-  		<script type="text/javascript">
+        <?php wp_enqueue_script('jquery-ui-datepicker'); 
+	 	      wp_enqueue_style('jquery-style', 'http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css'); ?>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery('.mydatepicker').datepicker({
+        dateFormat : 'yy/mm/dd'
+    });
+});
   			function formValidate() {
-  				if(document.tripsForm.new_trip_start.value == 'yyyy/mm/dd hh:mm') document.tripsForm.new_trip_start.value = '';
-  				if(document.tripsForm.new_trip_end.value == 'yyyy/mm/dd hh:mm') document.tripsForm.new_trip_end.value = '';
+  				if(document.tripsForm.new_trip_start.value == 'yyyy/mm/dd') document.tripsForm.new_trip_start.value = '';
+  				if(document.tripsForm.new_trip_end.value == 'yyyy/mm/dd') document.tripsForm.new_trip_end.value = '';
   				return true;
   			}
-  			
   		</script>
 
 	<div class="wrap">
@@ -197,9 +203,9 @@
 					</tr>
 					<tr>
 						<td style="text-align: right"><label for="new_trip_start" style="font-weight: normal;"><?=__('Start Date', DOMAIN)?>:</label></td>
-						<td><input type="text" name="new_trip_start" id="new_trip_start" size="18" value="yyyy/mm/dd hh:mm" onfocus="if(this.value == 'yyyy/mm/dd hh:mm') this.value = '';"/></td>
+						<td><input type="text" name="new_trip_start" id="new_trip_start" class="mydatepicker" size="10" value="yyyy/mm/dd" /></td>
 						<td style="text-align: right"><label for="new_trip_end" style="font-weight: normal;"><?=__('End Date', DOMAIN)?>:</label></td>
-						<td><input type="text" name="new_trip_end" id="new_trip_end" size="18" value="yyyy/mm/dd hh:mm" onfocus="if(this.value == 'yyyy/mm/dd hh:mm') this.value = '';"/></td>
+						<td><input type="text" name="new_trip_end" id="new_trip_end" class="mydatepicker" size="10" value="yyyy/mm/dd"/></td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top;"><label for="new_trip_desc" style="font-weight: normal;"><?=__('Description', DOMAIN)?>:</label></td>
