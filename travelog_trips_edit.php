@@ -157,7 +157,7 @@ jQuery(document).ready(function() {
                         </tr>
 					</tbody>
 				</table>
-				<fieldset name="stops_info" style="width: 33%;margin: 5px 0;padding-bottom:5px;">
+				<fieldset name="stops_info" style="width: 40%;margin: 5px 0;padding-bottom:5px;">
 					<?php if(count($trip->stops) == 1) $message = 'Stop'; else $message = 'Stops';?>
 					<legend><strong><?= count($trip->stops) ?> <?=__($message, DOMAIN)?>:</strong> (<a href="javascript:void(0)" onclick="var obj = document.getElementById('stops_list');if(this.innerHTML.substr(0,4)=='show'){this.innerHTML='hide'; obj.style.display = 'block';}else{this.innerHTML='show'; obj.style.display = 'none';}"><?php if($stops_info =='show') {echo 'hide';}else{echo 'show';} ?></a>)</legend>
 					<div id="stops_list" style="display: <?php if($stops_info =='show') {echo 'block';}else{echo 'none';} ?>;">
@@ -273,17 +273,14 @@ jQuery(document).ready(function() {
 						</form>
 					</div>
 				</fieldset>
-				<table>
-					<tbody>
-						<tr>
-							<td colspan="2"><label for="edit_description"><?=__('Description', DOMAIN)?></label><br />
-							<textarea rows="6" cols="50" name="edit_description" id="content"><?=$trip->description ?></textarea></td>
-						</tr>
-						<tr>
-							<td colspan="2" class="submit"><input type="submit" value="<?php if('add' == $action) { echo __("Add Trip", DOMAIN); }else{ echo __("Edit Trip", DOMAIN); } ?> &raquo;" onclick="document.forms[0].submit();" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='tools.php?page=travelog.php&area=trips'" /></td>
-						</tr>
-					</tbody>
-                </table>
+				<fieldset name="description_form" style="width: 40%;margin: 5px 0;">
+                  <legend><strong><?= __('Description', DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="var obj = document.getElementById('description');if(this.innerHTML.substr(0,4)=='show'){this.innerHTML='hide'; obj.style.display = 'block';}else{this.innerHTML='show'; obj.style.display = 'none';}"><?php if($description =='hide') {echo 'show';}else{echo 'hide';} ?></a>)</legend>
+                    <div id="description" style="margin: 5px 0px; display: <?php if($description =='hide') {echo 'none';}else{echo 'block';} ?>;">
+<!--    					<textarea rows="6" cols="50" name="edit_description" id="content"><?=$location->description ?></textarea></td> -->
+                            <?php wp_editor( $location->description, 'edit_description',  array( 'teeny' => true,  textarea_rows => 5) ); ?>
+					</div>
+				</fieldset>
+                <input type="submit" value="<?php if('add' == $action) { echo __("Add Trip", DOMAIN); }else{ echo __("Edit Trip", DOMAIN); } ?> &raquo;" onclick="document.forms[0].submit();" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='tools.php?page=travelog.php&area=trips'" />
                 <div style="clear: both;"></div>
 			</div>
 		</form>

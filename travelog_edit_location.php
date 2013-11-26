@@ -143,7 +143,7 @@ jQuery(document).ready(function() {
                          
                         </tbody>
 					</table>
-					<fieldset name="address_form" style="width:40%;margin: 5px 0;">
+					<fieldset name="address_form" style="width: 40%;margin: 5px 0;">
 						<legend><strong><?= __('Address', DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="showHide('address_info', this);"><?php if($address_info =='show') {echo 'hide';}else{echo 'show';} ?></a>)</legend>
 						<div id='address_info' style="display: <?php if($address_info =='show') {echo 'block';}else{echo 'none';} ?>;">
 							<table>
@@ -305,10 +305,9 @@ jQuery(document).ready(function() {
 				</fieldset>
 				<fieldset name="description_form" style="width: 40%;margin: 5px 0;">
                   <legend><strong><?= __('Description', DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="showHide('description', this);"><?php if($post_info == __('show', DOMAIN)) {echo __('hide', DOMAIN);}else{echo __('show', DOMAIN);} ?></a>)</legend>
-                    <div id="description" style="display: <?php if($description =='show') {echo 'block';}else{echo 'none';} ?>;">
+                    <div id="description" style="margin: 5px 0px; display: <?php if($description =='show') {echo 'block';}else{echo 'none';} ?>;">
 <!--    					<textarea rows="6" cols="50" name="edit_description" id="content"><?=$location->description ?></textarea></td> -->
                             <?php wp_editor( $location->description, 'edit_description',  array( 'teeny' => true,  textarea_rows => 5) ); ?>
-
 					</div>
 				</fieldset>
                 <input type="submit" value="<?php if('add' == $action) { echo __("Add Location", DOMAIN); }else{ echo __("Edit Location", DOMAIN); } ?> &raquo;" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='tools.php?page=travelog.php&area=locations'" />
