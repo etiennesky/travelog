@@ -143,7 +143,7 @@ jQuery(document).ready(function() {
                          
                         </tbody>
 					</table>
-					<fieldset name="address_form" style="width: 33%;margin: 5px 0;">
+					<fieldset name="address_form" style="width:40%;margin: 5px 0;">
 						<legend><strong><?= __('Address', DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="showHide('address_info', this);"><?php if($address_info =='show') {echo 'hide';}else{echo 'show';} ?></a>)</legend>
 						<div id='address_info' style="display: <?php if($address_info =='show') {echo 'block';}else{echo 'none';} ?>;">
 							<table>
@@ -164,7 +164,7 @@ jQuery(document).ready(function() {
 							</table>
 						</div>
 					</fieldset>
-					<fieldset name="coordinate_form" style="width: 33%;margin: 5px 0;">
+					<fieldset name="coordinate_form" style="width: 40%;margin: 5px 0;">
 						<legend><strong><?= __('Coordinates', DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="showHide('coordinate_info', this);"><?php if($visit_info == __('show', DOMAIN)) {echo __('hide', DOMAIN);}else{echo __('show', DOMAIN);} ?></a>)</legend>
 						<div id="coordinate_info" style="display: <?php if($coordinate_info =='show') {echo 'block';}else{echo 'none';} ?>;">
 							<table>
@@ -191,7 +191,7 @@ jQuery(document).ready(function() {
 -->
 					</div>
 				</fieldset>
-				<fieldset name="visits_form" style="width: 33%;margin: 5px 0;">
+				<fieldset name="visits_form" style="width: 40%;margin: 5px 0;">
 					<?php $visits = ($action=='edit') ? $location->get_datetimes() : 0; if(count($visits) === 1) $message = 'Visit'; else $message = 'Visits';?>
 					<legend><strong><?=count($visits)?> <?= __($message, DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="showHide('visit_info', this);"><?php if($visit_info == __('show', DOMAIN)) {echo __('hide', DOMAIN);}else{echo __('show', DOMAIN);} ?></a>)</legend>
 					<div id="visit_info" style="display: <?php if($visit_info =='show') {echo 'block';}else{echo 'none';} ?>;">
@@ -228,7 +228,7 @@ jQuery(document).ready(function() {
                         &nbsp;<input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('edit_new_visit'); if(this.checked){new_date.value ='<?=date('Y/m/d'); ?>';}else{if(new_date.value == '<?=date('Y/m/d'); ?>'){new_date.value ='';}}" /> <?= __('Today', DOMAIN) ?>
 					</div>
 				</fieldset>
-				<fieldset name="trips_form" style="width: 33%;margin: 5px 0;">
+				<fieldset name="trips_form" style="width: 40%;margin: 5px 0;">
 				<?php if('' != $location->trips) $location_trips = explode(",", $location->trips); if(count($location_trips) === 1) $message = 'Trip'; else $message = 'Trips';?>
 					<legend><strong><?=count($location_trips)?> <?= __($message, DOMAIN)?>:</strong> (<a href="javascript:void(0)" onclick="showHide('trip_info', this);"><?php if($trip_info =='show') {echo 'hide';}else{echo 'show';} ?></a>)</legend>
 					<div id="trip_info" style="display: <?php if($trip_info =='show') {echo 'block';}else{echo 'none';} ?>;">
@@ -286,7 +286,7 @@ jQuery(document).ready(function() {
 						
 					</div>
 				</fieldset>
-				<fieldset name="posts_form" style="width: 33%;margin: 5px 0;">
+				<fieldset name="posts_form" style="width: 40%;margin: 5px 0;">
 					<?php if(count($location->posts) === 1) $message = 'Post'; else $message = 'Posts';?>
 						<legend><strong><?=count($location->posts)?> <?= __($message, DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="showHide('posts_info', this);"><?php if($post_info == __('show', DOMAIN)) {echo __('hide', DOMAIN);}else{echo __('show', DOMAIN);} ?></a>)</legend>
 						<div id="posts_info" style="display: <?php if($posts_info =='show') {echo 'block';}else{echo 'none';} ?>;">
@@ -303,17 +303,15 @@ jQuery(document).ready(function() {
 							</ul>
 					</div>
 				</fieldset>
-				<table>
-					<tbody>
-						<tr>
-							<td colspan="2"><label for="edit_description"><?=__('Description', DOMAIN)?></label><br />
-							<textarea rows="6" cols="50" name="edit_description" id="content"><?=$location->description ?></textarea></td>
-						</tr>
-						<tr>
-							<td colspan="2" class="submit"><input type="submit" value="<?php if('add' == $action) { echo __("Add Location", DOMAIN); }else{ echo __("Edit Location", DOMAIN); } ?> &raquo;" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='tools.php?page=travelog.php&area=locations'" /></td>
-						</tr>
-					</tbody>
-                </table>
+				<fieldset name="description_form" style="width: 40%;margin: 5px 0;">
+                  <legend><strong><?= __('Description', DOMAIN) ?>:</strong> (<a href="javascript:void(0)" onclick="showHide('description', this);"><?php if($post_info == __('show', DOMAIN)) {echo __('hide', DOMAIN);}else{echo __('show', DOMAIN);} ?></a>)</legend>
+                    <div id="description" style="display: <?php if($description =='show') {echo 'block';}else{echo 'none';} ?>;">
+<!--    					<textarea rows="6" cols="50" name="edit_description" id="content"><?=$location->description ?></textarea></td> -->
+                            <?php wp_editor( $location->description, 'edit_description',  array( 'teeny' => true,  textarea_rows => 5) ); ?>
+
+					</div>
+				</fieldset>
+                <input type="submit" value="<?php if('add' == $action) { echo __("Add Location", DOMAIN); }else{ echo __("Edit Location", DOMAIN); } ?> &raquo;" /> <input type="button" value="<?=__("Cancel", DOMAIN)?>" onclick="window.location='tools.php?page=travelog.php&area=locations'" />
                 <div style="clear: both;"></div>
 			</div>
 		</form>

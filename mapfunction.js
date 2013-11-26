@@ -616,7 +616,7 @@ TravelogMap.prototype.getLocationInfo = function(locationID) {
     // descr.
     // TODO fix any wp tags present here (see my other blog.)
     if ( loc.description != '' && typeof(loc.description) != 'undefined' )
-        tmpStr += "<br>" + loc.description + "<br>";
+        tmpStr += "<br>" + loc.description.replace(/\n/g, "<br />") + "<br>";
 
     // posts + visits
     if ( loc.posts.length > 0 ) {

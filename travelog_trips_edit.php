@@ -153,7 +153,7 @@ jQuery(document).ready(function() {
 							<td><label for="edit_end_date"><?=__('End Date', DOMAIN)?></label></td><td><input type="text" name="edit_end_date" id="edit_end_date" class="mydatepicker" size="10" value="<?=$trip->end_date ?>" /></td>
                         </tr>
                         <tr>
-							<td><label for="edit_end_date"><?=__('Total Distance', DOMAIN)?></label></td><td><?php echo $trip->get_distance();?>km</td>
+							<td><label for="edit_end_date"><?=__('Total Distance', DOMAIN)?></label></td><td><?php echo $trip->get_distance();?> km</td>
                         </tr>
 					</tbody>
 				</table>
