@@ -225,13 +225,13 @@ function travelogLoadXMLLocations(xmlElems) {
 
 function TravelogDataForm(myName, formID, mapObj, renderfunc, rendererID, displayType, limiterID, searcherID, categoryChooserID, sorterID, tripChooserID) {
 	this.linkedMap = mapObj;
-	this.formObj = document.getElementById(formID);
-	this.renderObj = document.getElementById(rendererID);
-	this.numResults = document.getElementById(limiterID);
-	this.searchQuery = document.getElementById(searcherID);
-	this.categoryChooser = document.getElementById(categoryChooserID);
-	this.sortOrder = document.getElementById(sorterID);
-	this.tripChooser = document.getElementById(tripChooserID);
+	this.formObj = formID !='' ? document.getElementById(formID) : undefined;
+	this.renderObj = rendererID !='' ? document.getElementById(rendererID) : undefined;
+	this.numResults = limiterID !='' ? document.getElementById(limiterID) : undefined;
+	this.searchQuery = searcherID !='' ? document.getElementById(searcherID) : undefined;
+	this.categoryChooser = categoryChooserID !='' ? document.getElementById(categoryChooserID) : undefined;
+	this.sortOrder = sorterID !='' ? document.getElementById(sorterID) : undefined;
+	this.tripChooser =  tripChooserID !='' ? document.getElementById(tripChooserID) : undefined;
 	this.displayType = displayType;
 	this.oldQuery = '';
 	this.timer = null;
