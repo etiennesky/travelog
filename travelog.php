@@ -66,6 +66,8 @@ if(isset($_GET['activate']) && $_GET['activate'] == 'true') {
 	add_action('init', array('Travelog','prepare_db'));
 }
 
+add_shortcode('travelog', 'travelog_shortcode');
+
 
 class location_db {
 	// Declare the location object that will be used throughout this plugin
@@ -595,7 +597,7 @@ class Travelog {
 		if($limit != '') $query_sql .= " LIMIT $limit";
 		
 		$results = $wpdb->get_results($query_sql, ARRAY_A);
-		
+
 		if($results) {
 			foreach ($results as $result) {
 				$trip = new trip();
@@ -606,6 +608,8 @@ class Travelog {
 		}else{
 			return array();
 		}
+
+		return $results;
 	}
 	
 // ################################################## End function get_trips()
@@ -615,6 +619,7 @@ class Travelog {
 		global $wpdb;
 		$query_sql = "SELECT * FROM " . DB_TRIPS_TABLE . " WHERE id = '$trip_id' LIMIT 1";
 		$result = $wpdb->get_row($query_sql, ARRAY_A);
+		if(! $result) return false;
 		$trip = new trip();
 		$trip->loadInfo($result);
 		$trip->get_itinerary();
@@ -1197,17 +1202,19 @@ function distance_between($loc1, $loc2, $unit = "k" ) {
 }
 
 function travelog_summary_info() {
-	// Outputs a block of HTML showing location name (linked to map of location)
+	// Returns a block of HTML showing location name (linked to map of location)
 	// designed to be shown along with post summaries (ie. index.php, archive.php or search.php)
 	
 	$location = Travelog::get_post_location();
 
+	$output = "";
 	if($location) {
-        echo "Posted from <a href='".Travelog::map_location_url("GoogleMaps")."' title='Map this location'>".$location->name;
-        if ( $location->name != $location->city ) echo ", ".$location->city;
-        if ( $location->country != "" ) echo ", ".$location->country;
-        echo "</a><br />";
+        $output .= "<span class=\"entry-meta\">Posted from <a href='".Travelog::map_location_url("GoogleMaps")."' title='Map this location'>".$location->name;
+        if ( $location->name != $location->city ) $output .= ", ".$location->city;
+        if ( $location->country != "" ) $output .= ", ".$location->country;
+        $output .= "</a></span>";
     }
+	return $output;
 }
 
 function travelog_summary_info1() {
@@ -1226,4 +1233,107 @@ function travelog_single_info() {
 		from <a href="<?= Travelog::map_location_url("GoogleMaps") ?>" title="Map this location"><?php the_location_name() ?></a> &#64; <?php the_latitudeDMS() ?>, <?php the_longitudeDMS() ?>,
 	<? endif;
 }
+
+function travelog_list_trips($page='travel',$select=false) {
+    // Returns a block of HTML code that is designed to go in the post information section on the bottom of detailed post pages (single.php)
+	$output = "";
+    $trips = Travelog::get_trips();
+    if($trips) {
+		if($select) {
+			$output .="<select name='select_travel' onChange=\"if (this.selectedIndex>0 ) document.location.href='" . $page . "?trips='+this.options[this.selectedIndex].value;\" >";
+			$output .= "<option value=0>Select trip</option>";
+			foreach ($trips as $tripid => $trip) {
+				$output .= "<option value=" . $tripid . ">" . $trip->name . "</option>";
+			}
+		    $output .= "</select>";
+		}
+		else {
+			foreach ($trips as $tripid => $trip) {
+				$output .= "<li><a href='".$page."?trips=$trip->id'>".$trip->name."</a></li>";
+			}
+		}
+	}
+	return $output;
+}
+
+function travelog_print_trip($trip,$options) {
+
+	if ( is_int($trip) || is_string($trip) )
+		$trip = Travelog::get_trip($trip);
+
+	if ( ! $trip ) {
+		echo "trip does not exist...<br>";
+		return;
+	}
+
+	echo "<div>";
+
+	if($trip->name!='') echo '<h3>Trip ' . $trip->name . '</h3>';
+
+	//print desc and dates
+	if ($trip->description!='') $tmp_desc = $trip->description; else $tmp_desc="";
+	if ($trip->description!='') $tmp_desc = polyglot_filter_with_message($trip->description); else $tmp_desc="";
+	if ($trip->start_date!='') $tmp_sd = $trip->start_date; else $tmp_sd="";
+	if ($trip->end_date!='') $tmp_ed = $trip->end_date; else $tmp_ed="";
+	if ($tmp_desc.$tmp_sd.$tmp_ed!="") {
+		echo "<p>$tmp_desc";
+		if ($tmp_desc!='') echo "<br>";
+		echo "($tmp_sd - $tmp_ed)</p>";
+	}
+
+	if ( !isset($options['trips']) ) $options['trips'] = $trip->id; 
+	//echo "options: ";print_r($options);
+	echo Travelog::embed_map($options);
+	//echo '[ map for trip '.$trip->id.' ]<br>';
+
+	echo "</div>";
+}
+
+function travelog_shortcode($atts) {
+
+	$options=(array('map_type'=>"hybrid", 'controls'=>"large", 'width'=>"600", 'height'=>"600",'show_types'=>1,'scale'=>1));
+
+	if($atts) {
+		foreach ($atts as $key => $value) {  
+			$options[$key] = $value;
+		}
+	}	
+
+	if ($_GET['trips'] != "") {
+		$options['trips'] = $_GET['trips'];
+	}
+
+	if(isset($options['trips'])) {
+		travelog_print_trip($options['trips'],$options);
+	}
+	else {
+		/*
+		$trips = Travelog::get_trips(5,'newest');
+		if ($trips!=false) {
+			foreach ($trips as $tripid => $trip) { 
+				travelog_print_trip($trip, $options);
+				echo '<br><br>';
+			}
+		}
+		*/
+		$trips = Travelog::get_trips(1,'newest');
+		if(isset($trips[1])) {
+			echo "<br>";
+			travelog_print_trip($trips[1],$options);
+		}
+		//echo"<p>".__('You can find the other trips in the "Trips" section in the sidebar.')."</p>";  
+	}
+
+	echo "<br>Other trips: " .  travelog_list_trips('travel',true);
+	echo "<br><br>";
+
+ /*
+<!--
+<br>This page does not work with Internet Explorer.  Use <a href='http://get-firefox.com'>Firefox</a> instead!
+<br>Cette page ne fonctionne pas avec Internet Explorer.  Utilisez <a href='http://get-firefox.com'>Firefox</a> &agrave; la place!
+-->
+	*/
+
+}
+
 ?>
