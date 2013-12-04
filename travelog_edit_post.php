@@ -26,7 +26,17 @@
 	$categories = Travelog::get_categories();
 	$post_location_id = get_post_meta($post_ID, '_travelog_location_id', true);
 ?>
-			
+
+        <?php wp_enqueue_script('jquery-ui-datepicker'); 
+	 	      wp_enqueue_style('jquery-style', 'http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css'); ?>
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery('#travelog_add_visit').datepicker({
+        dateFormat : 'yy/mm/dd'
+    });
+});</script type="text/javascript">
+ 		
 	<fieldset id="travelog" class="dbx-box">
 		<h3 class="dbx-handle">Travelog Location</h3>
 		<!--<legend><?= __('Travelog Location', DOMAIN) ?></legend> //-->
@@ -71,6 +81,12 @@
 				}
 			-->
 			</style>
+<!--
 			<div id="add_dates" class="dbx-content" >Add visit to this location <input type="text" name="travelog_add_visit" id="travelog_add_visit" size="18" value="yyyy/mm/dd hh:mm" onfocus="if(this.value == 'yyyy/mm/dd hh:mm') this.value = '';"/>&nbsp;&nbsp;<input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('travelog_add_visit'); if(this.checked){new_date.value ='<?=date('Y/m/d H:i'); ?>';}else{if(new_date.value == '<?=date('Y/m/d H:i'); ?>'){new_date.value ='';}}" /> Today</div>
+-->
+			<div id="add_dates" class="dbx-content" >Add visit to this location 
+            <input type="text" name="travelog_add_visit" id="travelog_add_visit" size="10" value="yyyy/mm/dd" onfocus="if(this.value == 'yyyy/mm/dd') this.value = '';"/>&nbsp;&nbsp;at
+            <input type="text" name="travelog_add_visit_time" id="travelog_add_visit_time" size="10" value="hh:mm" onfocus="if(this.value == 'hh:mm') this.value = '';"/>&nbsp;&nbsp;
+            <input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('travelog_add_visit'); if(this.checked){new_date.value ='<?=date('Y/m/d'); ?>';}else{if(new_date.value == '<?=date('Y/m/d'); ?>'){new_date.value ='';}}" /> Today</div>
 		</div>
 	</fieldset>

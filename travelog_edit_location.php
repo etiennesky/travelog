@@ -200,7 +200,7 @@ jQuery(document).ready(function() {
 							if('edit' == $action) :
 								$visits = $location->get_datetimes(); 
 								if(count($visits) > 0) : ?>
-						<table style="width: 80%;">
+						<table style="width: 50%;">
 							<thead>
 								<tr>
 									<th scope="col"><?= __('Date', DOMAIN) ?></th>

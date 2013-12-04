@@ -663,12 +663,9 @@ class Travelog {
 				}
         }
 
-
-                /* echo "new loc1!";print_r($_POST); */
+		//echo "new loc1!";print_r($_POST); exit;
 		if($new_location_id != "") { // Only run this if there is a location to associate the post/page (pages call this too!) with
-              /* echo "new loc!";print_r($_POST); */
-			// If a new location has been added, create it and then retreive its id into $new_location_id
-			
+			// If a new location has been added, create it and then retreive its id into $new_location_id			
 			
 			// Add/update post-meta value to reflect new travelog location_id
 			if(get_post_meta($post_id, "_travelog_location_id", true)) {
@@ -678,10 +675,16 @@ class Travelog {
 			}
 		
 			// Add the date to the dates_visited for the location associated with that post
-			if($_POST["travelog_add_visit"] != "") {
+			if( ($_POST["travelog_add_visit"] != "")
+				&& ($_POST["travelog_add_visit"] != "yyyy/mm/dd")
+				&& ($_POST["travelog_add_visit"] != "yyyy/mm/dd hh:mm") ) {
 				$location = Travelog::get_location($new_location_id);
 				$dates = $location->get_visits();
-				$dates = array_merge($dates, Array($_POST["travelog_add_visit"]));
+				//$dates = array_merge($dates, Array($_POST["travelog_add_visit"]));
+				$tmp_date = $_POST["travelog_add_visit"];
+				if($_POST["travelog_add_visit_time"] != "" && $_POST["travelog_add_visit_time"] != "hh:mm")
+					$tmp_date .= " " . $_POST["travelog_add_visit_time"];
+				$dates = array_merge($dates, Array($tmp_date));
 				arsort($dates);
 				$new_dates_visited = implode(",", $dates);
 				$wpdb->query("UPDATE ".DB_TABLE." SET dates_visited = '".$new_dates_visited."' WHERE id = $location->id");
