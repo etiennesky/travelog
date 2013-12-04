@@ -155,6 +155,8 @@ class trip extends trip_db {
 		// Returns an array of location ids sorted in order they were visited on the trip
 		global $wpdb;
 		$this->stops = array();$itinerary = array();
+		$start_date = strlen($this->start_date) > 12 ? $this->start_date : $this->start_date . ' 00:00';
+		$end_date = strlen($this->end_date) > 12 ? $this->end_date : $this->end_date . ' 23:59';
 		// Create an array of relevant locations with key being location_id
 		$query_sql = 'SELECT id, dates_visited, name FROM ' . DB_TABLE . ' WHERE FIND_IN_SET('.$this->id.', trips) > 0';
 		$locations = $wpdb->get_results($query_sql);
@@ -162,7 +164,7 @@ class trip extends trip_db {
 			foreach($locations as $location) {
 				$visits = explode(",", $location->dates_visited);
 				foreach($visits as $visit) {
-					if((0 == strcmp($visit, $this->start_date) || 0 < strcmp($visit, $this->start_date)) && (0 == strcmp($visit, $this->end_date) || 0 > strcmp($visit, $this->end_date))) {
+					if((0 == strcmp($visit, $start_date) || 0 < strcmp($visit, $start_date)) && (0 == strcmp($visit, $end_date) || 0 > strcmp($visit, $end_date))) {
 						// This visit occured during the trip time window
 						$itinerary[] = array('date' => "$visit", 'location_id' => $location->id, 'name' => $location->name); 
 					}

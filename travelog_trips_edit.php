@@ -24,7 +24,9 @@
 		if(isset($_POST['addStopLocationID']) && $_POST['addStopLocationID'] != '') {
 			$stop_id = $_POST['addStopLocationID'];
 			$new_visit = $_POST['addStopVisit'];
-			If($new_visit != 'yyyy/mm/dd hh:mm' && $new_visit != '') {
+			If($new_visit != 'yyyy/mm/dd hh:mm' && $new_visit != 'yyyy/mm/dd' && $new_visit != '') {
+				if($_POST['addStopVisit_time'] != '' && $_POST['addStopVisit_time'] != 'hh:mm')
+					$new_visit .= ' ' . $_POST['addStopVisit_time'];
 				$location = Travelog::get_location($stop_id);
 
 				// Add a new visit if passed
@@ -40,7 +42,7 @@
 				}else{
 					$location->dates_visited = '';
 				}
-				
+
 				// Make sure the location is associated with the trip
 				if($location->trips == '') {
 					$trips = array($tripID);
@@ -51,7 +53,7 @@
 				$query = "UPDATE " . DB_TABLE . " SET dates_visited = '$location->dates_visited', ";
 				$query .= "trips = '". implode(',',$trips)."' ";
 				$query .= "WHERE id = '$location->id'";
-		
+
 				if (FALSE !== $wpdb->query($query)) {
 					$message = '<p>'.__('Stop added sucessfully', DOMAIN).'</p>';
 				}
@@ -121,9 +123,10 @@ jQuery(document).ready(function() {
         dateFormat : 'yy/mm/dd'
     });
 });
+
   			function formValidate() {
-  				if(document.tripsForm.edit_start_date.value == 'yyyy/mm/dd') document.tripsForm.edit_start_date.value = '';
-  				if(document.tripsForm.edit_end_date.value == 'yyyy/mm/dd') document.tripsForm.edit_end_date.value = '';
+  				if(document.editTripForm.edit_start_date.value == 'yyyy/mm/dd') document.editTripForm.edit_start_date.value = '';
+  				if(document.editTripForm.edit_end_date.value == 'yyyy/mm/dd') document.editTripForm.edit_end_date.value = '';
   				return true;
   			}
   		</script>
@@ -179,8 +182,9 @@ jQuery(document).ready(function() {
 									<div id="addStopOptions" style="display:none;margin-bottom:0;">
 										<small id="addStopMessage"></small>
 										<div id="addVisitOptions" style="margin-top: 10px;">New Visit: 
-                                        <input type="text" name="addStopVisit" id="addStopVisit" size="18" value="yyyy/mm/dd hh:mm" />
-                                        <input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('addStopVisit'); if(this.checked){new_date.value ='<?=date('Y/m/d H:i'); ?>';}else{if(new_date.value == '<?=date('Y/m/d H:i'); ?>'){new_date.value ='';}}" /> Today
+										<input type="text" name="addStopVisit" id="addStopVisit" size="10" value="yyyy/mm/dd" class="mydatepicker" />&nbsp;&nbsp;at&nbsp;&nbsp;  
+                                        <input type="text" name="addStopVisit_time" id="addStopVisit_time" size="10" value="hh:mm" onfocus="if(this.value == 'hh:mm') this.value = '';" />&nbsp;&nbsp;
+                                        <input type="checkbox" name="travelog_add_date_today" value="1" onclick="var new_date=document.getElementById('addStopVisit'); if(this.checked){new_date.value ='<?=date('Y/m/d'); ?>';}else{if(new_date.value == '<?=date('Y/m/d'); ?>'){new_date.value ='';}}" /> Today
                                         <input type="button" onclick="addStop();" value="Add Stop &raquo;" /></div>
 									</div>
 								</div>
@@ -254,7 +258,7 @@ jQuery(document).ready(function() {
 										var newVisit = document.getElementById('addStopVisit');
 										var locationID = document.getElementById('addStopLocationID').value;
 										
-										if(newVisit.value != '' && newVisit.value != 'yyyy/mm/dd hh:mm') {
+										if(newVisit.value != '' && newVisit.value != 'yyyy/mm/dd') {
 											if(newVisit.value >= tripStart && newVisit.value <= tripEnd) {
 												var formElem = document.getElementById('editTripForm'); // Submit form
 												formElem.action = 'tools.php?page=travelog.php&area=trips&action=edit&id='+tripID;
