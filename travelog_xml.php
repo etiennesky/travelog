@@ -66,7 +66,7 @@
 <travelogdata>
  <?php if($trips) {?><trips>
 	<?php foreach ($trips as $trip) { ?>
-	<trip id="<?=$trip->id?>" name="<?=$trip->name?>" start="<?=$trip->start_date?>" end="<?=$trip->end_date?>">
+	<trip id="<?=$trip->id?>" name="<?=$trip->name?>" start="<?=$trip->start_date?>" end="<?=$trip->end_date?>" collection="<?=$trip->collection?>" >
 		<description><?=$trip->description?></description>
 		<stops>
 		<? foreach ($trip->stops as $stop) { ?>

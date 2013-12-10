@@ -136,7 +136,7 @@ class trip_db {
 	var $start_date = '';
 	var $end_date = '';
 	var $description = '';
-	
+	var $collection = '';
 }
 
 class trip extends trip_db {
@@ -392,6 +392,7 @@ class Travelog {
 				 description text NOT NULL,
 				 start_date tinytext NOT NULL,
 				 end_date tinytext NOT NULL,
+				 collection tinytext NOT NULL,
 				 UNIQUE KEY id (id)
 			   );";
 			   

@@ -140,6 +140,7 @@ function travelogLoadXMLData(xmlDoc, dataHandler) {
 			tl.name = tripElems[i].getAttribute('name');
 			tl.start = tripElems[i].getAttribute('start');
 			tl.end = tripElems[i].getAttribute('end');
+			tl.collection = tripElems[i].getAttribute('collection');
             // TOD fix html content...
 			if(tripElems[i].getElementsByTagName('description')[0].firstChild) tl.description = tripElems[i].getElementsByTagName('description')[0].firstChild.nodeValue;
 			tl.stops = new Array();
@@ -660,7 +661,7 @@ TravelogMap.prototype.parseAddedTrips = function(tripIds) {
 					}
 				}
 			}
-			if(isGMapsJSLoaded) {
+			if(isGMapsJSLoaded && !tTrips[trips[tripkey]].collection) {
 				this.overlays[trips[tripkey]] = new google.maps.Polyline( 
                     { map: this.map, path: tripPath, strokeColor: '#ff0000', strokeOpacity: 0.9, strokeWeight: 2 } );
 			}
