@@ -663,7 +663,7 @@ TravelogMap.prototype.parseAddedTrips = function(tripIds) {
 			}
 			if(isGMapsJSLoaded && !tTrips[trips[tripkey]].collection) {
 				this.overlays[trips[tripkey]] = new google.maps.Polyline( 
-                    { map: this.map, path: tripPath, strokeColor: '#ff0000', strokeOpacity: 0.9, strokeWeight: 2 } );
+                    { map: this.map, path: tripPath, strokeColor: '#ff0000', strokeOpacity: 0.9, strokeWeight: 2, geodesic: true } );
 			}
 		}
 	}
