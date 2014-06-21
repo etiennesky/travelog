@@ -1330,8 +1330,11 @@ function travelog_shortcode($atts) {
 		//echo"<p>".__('You can find the other trips in the "Trips" section in the sidebar.')."</p>";  
 	}
 
-	echo "<br>Other trips: " .  travelog_list_trips('travel',true);
-	echo "<br><br>";
+	if(count(Travelog::get_trips(1,'newest')) >= 1 ) {
+		echo "<br>Other trips: " .  travelog_list_trips('travel',true);
+		echo "<br><br>";
+	}
+
 
  /*
 <!--
